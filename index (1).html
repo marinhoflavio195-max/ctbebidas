@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>São Raimundo Supermercado CT BEBIDAS</title>
+
+<style>
+
+body{
+font-family:Arial;
+margin:0;
+background:#f2f2f2;
+}
+
+header{
+background:#c40000;
+color:white;
+text-align:center;
+padding:5px;
+}
+
+header img{
+width:100%;
+max-height:150px;
+background:white;
+object-fit:contain;
+}
+
+/* PRODUTOS */
+
+.prod{
+background:white;
+margin:8px;
+padding:8px;
+border-radius:8px;
+display:flex;
+gap:8px;
+align-items:center;
+}
+
+.prod img{
+width:70px;
+height:70px;
+object-fit:cover;
+border-radius:5px;
+border:1px solid #ccc;
+}
+
+.prod-info{
+flex:1;
+}
+
+.prod input{
+width:50px;
+}
+
+/* CARRINHO */
+
+#cart{
+background:white;
+margin:10px;
+padding:10px;
+border-radius:8px;
+}
+
+button{
+background:#c40000;
+color:white;
+border:none;
+padding:6px 10px;
+border-radius:5px;
+}
+
+.remove{
+background:#444;
+}
+
+/* PIX */
+
+#pixBox{
+display:block;
+background:#ffe5e5;
+padding:10px;
+margin-top:8px;
+border-radius:5px;
+text-align:center;
+}
+
+#pixBox img{
+width:220px;
+border:1px solid #ccc;
+margin:5px;
+}
+
+input{
+width:100%;
+padding:6px;
+margin:3px 0;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<img src="logo.jpg">
+
+<h3>São Raimundo Supermercado CT BEBIDAS</h3>
+
+</header>
+
+<!-- PRODUTOS -->
+
+<div id="produtos"></div>
+
+<!-- CARRINHO -->
+
+<div id="cart">
+
+<h3>🛒 Carrinho</h3>
+
+<ul id="lista"></ul>
+
+<p><b>Total:</b> R$ <span id="total">0.00</span></p>
+
+<h3>💳 Pagamento</h3>
+
+<select id="pag" onchange="mostrarPix()">
+<option>PIX</option>
+<option>Cartão</option>
+<option>Dinheiro</option>
+</select>
+
+<!-- PIX -->
+
+<div id="pixBox">
+
+<p><b>Chave PIX:</b> 99981050024</p>
+
+<img id="qrPix">
+
+<p>📤 Enviar comprovante</p>
+<input type="file" accept="image/*,application/pdf">
+
+</div>
+
+<h3>👤 Cliente</h3>
+
+<input id="nome" placeholder="Nome">
+<input id="end" placeholder="Endereço">
+
+<button onclick="finalizar()">Enviar Pedido</button>
+
+</div>
+
+<script>
+
+/* PRODUTOS */
+
+let produtos=[
+
+{
+nome:"Brahma 350ml",
+preco:3.89,
+img:"img/brahma.jpg"
+},
+
+{
+nome:"Skol 269ml",
+preco:3.25,
+img:"img/skol.jpg"
+},
+
+{
+nome:"Heineken 330ml",
+preco:6.95,
+img:"img/heineken.jpg"
+},
+
+{
+nome:"Stella 330ml",
+preco:7.35,
+img:"img/stella.jpg"
+},
+
+{
+nome:"Budweiser 350ml",
+preco:4.75,
+img:"img/bud.jpg"
+}
+
+];
+
+let carrinho=[];
+let total=0;
+
+/* MOSTRAR PRODUTOS */
+
+function mostrar(){
+
+let div=document.getElementById("produtos");
+div.innerHTML="";
+
+produtos.forEach((p,i)=>{
+
+div.innerHTML+=`
+
+<div class="prod">
+
+<img src="${p.img}">
+
+<div class="prod-info">
+
+<b>${p.nome}</b><br>
+R$ ${p.preco.toFixed(2)}
+
+</div>
+
+Qtd:
+<input type="number" min="1" value="1" id="q${i}">
+
+<button onclick="add(${i})">+</button>
+
+</div>
+
+`;
+
+});
+
+}
+
+mostrar();
+
+/* CARRINHO */
+
+function add(i){
+
+let qtd=parseInt(document.getElementById("q"+i).value);
+
+if(qtd<=0) return;
+
+let p=produtos[i];
+
+for(let x=0;x<qtd;x++){
+carrinho.push({n:p.nome,v:p.preco});
+}
+
+atualizar();
+
+}
+
+/* ATUALIZAR */
+
+function atualizar(){
+
+let ul=document.getElementById("lista");
+ul.innerHTML="";
+total=0;
+
+carrinho.forEach((i,idx)=>{
+
+ul.innerHTML+=`
+
+<li>
+${i.n} - R$ ${i.v.toFixed(2)}
+<button class="remove" onclick="remover(${idx})">X</button>
+</li>
+
+`;
+
+total+=i.v;
+
+});
+
+document.getElementById("total").innerText=total.toFixed(2);
+
+gerarPix();
+
+}
+
+/* REMOVER */
+
+function remover(i){
+
+carrinho.splice(i,1);
+atualizar();
+
+}
+
+/* PIX */
+
+function mostrarPix(){
+
+let p=document.getElementById("pag").value;
+
+document.getElementById("pixBox").style.display=
+(p=="PIX")?"block":"none";
+
+}
+
+function gerarPix(){
+
+let valor=total.toFixed(2);
+
+if(valor<=0) return;
+
+let chave="99981050024";
+
+let dados="PIX|"+chave+"|"+valor;
+
+let url="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data="+
+encodeURIComponent(dados);
+
+document.getElementById("qrPix").src=url;
+
+}
+
+/* FINALIZAR */
+
+function finalizar(){
+
+if(carrinho.length==0){
+alert("Carrinho vazio");
+return;
+}
+
+let nome=document.getElementById("nome").value;
+let end=document.getElementById("end").value;
+
+if(nome==""||end==""){
+alert("Preencha seus dados");
+return;
+}
+
+let msg="🛒 *Pedido São Raimundo CT BEBIDAS*%0A%0A";
+
+carrinho.forEach(i=>{
+msg+="🍺 "+i.n+" - R$ "+i.v.toFixed(2)+"%0A";
+});
+
+msg+="%0A💰 Total: R$ "+total.toFixed(2);
+msg+="%0A💳 PIX";
+msg+="%0A👤 "+nome;
+msg+="%0A📍 "+end;
+msg+="%0A%0A📸 Envie o comprovante:";
+
+window.open("https://wa.me/5599988592997?text="+msg);
+
+}
+
+</script>
+
+</body>
+</html>
