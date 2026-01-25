@@ -74,14 +74,15 @@ input[type="number"]{width:50px;text-align:center;}
 <script>
 // Lista completa de 80 cervejas
 const produtos=[
-{id:863,nome:"Cerveja Brahma Chopp LT 350ML",preco:3.89,imagem:"img/Cerveja Brahma Chopp LT 350ML.png"},
-{id:1502,nome:"Cerveja Bohemia Long Neck 355ML",preco:4.49,imagem:"img/cerveja.png"},
-{id:3084,nome:"Cerveja Amstel Lager 600ML",preco:7.99,imagem:"img/cerveja.png"},
-{id:3499,nome:"Cerveja Antarctica LT 350ML",preco:4.35,imagem:"img/Cerveja antarctica 350ml.png"},
-{id:10695,nome:"Cerveja Kaiser Latão 473ML",preco:3.95,imagem:"img/cerveja kaiser lt 473ml.png"},
-// ... coloque aqui todas as outras 75 cervejas com o mesmo padrão
+{id:863,nome:"Cerveja Brahma Chopp LT 350ML",preco:3.89,imagem:"img/Cerveja_Brahma_Chopp_LT_350ML.png"},
+{id:1502,nome:"Cerveja Bohemia Long Neck 355ML",preco:4.49,imagem:"img/Cerveja_Bohemia_Long_Neck_355ML.png"},
+{id:3084,nome:"Cerveja Amstel Lager 600ML",preco:7.99,imagem:"img/Cerveja_Amstel_Lager_600ML.png"},
+{id:3499,nome:"Cerveja Antarctica LT 350ML",preco:4.35,imagem:"img/Cerveja_Antarctica_350ML.png"},
+{id:10695,nome:"Cerveja Kaiser Latão 473ML",preco:3.95,imagem:"img/Cerveja_Kaiser_Latao_473ML.png"},
+// continue aqui com as demais 75 cervejas seguindo o mesmo padrão de id, nome e imagem
 ];
 
+// Carrinho
 let carrinho=[];
 let total=0;
 let cupomAtivo=false;
@@ -124,7 +125,6 @@ function atualizarCarrinho(){
     div.innerHTML=`${i.nome} R$${i.preco.toFixed(2)} x <input type="number" min="1" value="${i.quantidade}" onchange="alterarQuantidade(${i.id},this.value)"> <button onclick="removerItem(${i.id})">❌</button>`;
     carr.appendChild(div);
   });
-  // Frete fixo R$5
   const totalFinal=total+5;
   document.getElementById("total").innerText=`Total: R$ ${totalFinal.toFixed(2)} (Frete R$5)`;
   atualizarContador();
