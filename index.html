@@ -20,12 +20,13 @@ nav span{margin-right:20px;cursor:pointer;font-weight:bold;}
 .produto h3{font-size:16px;margin:10px;}
 .produto p{font-size:16px;margin:0 10px 10px;font-weight:bold;color:#c00;}
 .produto button{margin:0 10px 10px;background:#ffc107;color:#000;border:none;padding:8px 0;border-radius:5px;width:calc(100%-20px);cursor:pointer;font-weight:bold;}
-.carrinho{background:#fff;padding:15px;margin-top:15px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.2);display:none;position:fixed;top:70px;right:20px;width:300px;max-height:70vh;overflow-y:auto;z-index:101;}
+.carrinho{background:#fff;padding:15px;margin-top:15px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.2);display:none;position:fixed;top:70px;right:20px;width:320px;max-height:80vh;overflow-y:auto;z-index:101;}
 .carrinho-item{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ccc;padding:5px 0;}
-button{cursor:pointer;}
 input[type="number"]{width:50px;text-align:center;}
 .total{font-weight:bold;margin-top:10px;}
 .cupom{margin-top:10px;}
+.pagamento{margin-top:15px;padding-top:10px;border-top:1px solid #ccc;}
+#qrcode{margin-top:10px;text-align:center;}
 </style>
 </head>
 <body>
@@ -53,30 +54,44 @@ input[type="number"]{width:50px;text-align:center;}
     <button onclick="aplicarCupom()">Aplicar</button>
     <div id="mensagem-cupom"></div>
   </div>
+  <div class="pagamento">
+    <h3>Formas de Pagamento</h3>
+    <button onclick="mostrarPix()">Pix</button>
+    <button onclick="alert('Pagamento com cartão em desenvolvimento')">Cartão</button>
+    <button onclick="alert('Boleto em desenvolvimento')">Boleto</button>
+    <div id="qrcode"></div>
+    <div id="uploadComprovante" style="display:none; margin-top:10px;">
+      <label>Enviar comprovante Pix:</label><br>
+      <input type="file" id="comprovantePix" accept="image/*">
+    </div>
+  </div>
   <div style="margin-top:10px;">
     <button onclick="gerarPedido()">Enviar pedido no WhatsApp</button>
   </div>
 </div>
 
+<!-- Biblioteca QRCode.js -->
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 <script>
-// Lista de produtos (exemplo com os primeiros, adicione todos ~80 produtos depois)
+// Lista de produtos (exemplo parcial, adicione todos ~80 produtos)
 const produtos = [
 {id:1,nome:"Cerveja Brahma Chopp LT 350ML",preco:3.89,imagem:"img/Cerveja Brahma Chopp LT 350ML.png"},
 {id:2,nome:"Cerveja Bohemia Long Neck 355ML",preco:4.49,imagem:"img/cerveja.png"},
 {id:3,nome:"Cerveja Amstel Lager 600ML",preco:7.99,imagem:"img/cerveja.png"},
 {id:4,nome:"Cerveja Antarctica LT 350ML",preco:4.35,imagem:"img/Cerveja antarctica 350ml.png"},
 {id:5,nome:"Cerveja Kaiser Latão 473ML",preco:3.95,imagem:"img/cerveja kaiser lt 473ml.png"},
-// ... Adicione todos os demais produtos aqui seguindo o mesmo padrão
+// ... Adicione os restantes seguindo o mesmo padrão
 ];
 
 let carrinho = [];
 let total = 0;
 let cupomAtivo = false;
 let cupomUsos = 0;
+const chavePix = "99981050024"; // sua chave Pix
 
 function mostrarProdutos(){
   const div = document.getElementById('produtos');
-  div.innerHTML = "";
+  div.innerHTML="";
   produtos.forEach(p=>{
     const prodDiv = document.createElement('div');
     prodDiv.className='produto';
@@ -98,11 +113,8 @@ function atualizarContador(){
 function adicionarCarrinho(id){
   const produto = produtos.find(p=>p.id===id);
   const carrinhoItem = carrinho.find(c=>c.id===id);
-  if(carrinhoItem){
-    carrinhoItem.qtd++;
-  } else {
-    carrinho.push({id:produto.id,nome:produto.nome,preco:produto.preco,qtd:1});
-  }
+  if(carrinhoItem){ carrinhoItem.qtd++; } 
+  else { carrinho.push({id:produto.id,nome:produto.nome,preco:produto.preco,qtd:1}); }
   atualizarCarrinho();
   atualizarContador();
 }
@@ -117,7 +129,7 @@ function alterarQuantidade(id, valor){
   const item = carrinho.find(c=>c.id===id);
   if(!item) return;
   item.qtd += valor;
-  if(item.qtd < 1) item.qtd = 1;
+  if(item.qtd<1) item.qtd=1;
   atualizarCarrinho();
   atualizarContador();
 }
@@ -147,46 +159,51 @@ function atualizarCarrinho(){
 function aplicarCupom(){
   const cupom = document.getElementById('cupom').value.trim().toUpperCase();
   const mensagem = document.getElementById('mensagem-cupom');
-  if(cupom === 'PRIMEIRA10' && cupomUsos < 10 && !cupomAtivo){
+  if(cupom==='PRIMEIRA10' && cupomUsos<10 && !cupomAtivo){
     total *= 0.9;
     cupomAtivo = true;
     cupomUsos++;
     atualizarCarrinho();
     mensagem.innerText = "Cupom aplicado! 10% de desconto.";
-  } else if(cupomAtivo){
-    mensagem.innerText = "Você já usou o cupom.";
-  } else {
-    mensagem.innerText = "Cupom inválido ou expirado.";
-  }
+  } else if(cupomAtivo){ mensagem.innerText="Você já usou o cupom."; }
+  else{ mensagem.innerText="Cupom inválido ou expirado."; }
 }
 
 function gerarPedido(){
-  if(carrinho.length===0){
-    alert("Carrinho vazio!");
-    return;
-  }
-  let texto = "Olá, quero fazer o pedido:\n";
+  if(carrinho.length===0){ alert("Carrinho vazio!"); return; }
+  let texto="Olá, quero fazer o pedido:\n";
   carrinho.forEach(item=>{
     texto += `- ${item.nome} x ${item.qtd} = R$ ${(item.preco*item.qtd).toFixed(2)}\n`;
   });
   texto += `Frete: R$5\nTotal: R$ ${total.toFixed(2)}\n`;
-  const link = `https://wa.me/5599988592997?text=${encodeURIComponent(texto)}`;
+  const link=`https://wa.me/5599988592997?text=${encodeURIComponent(texto)}`;
   window.open(link,'_blank');
 }
 
 function toggleCarrinho(){
-  const carrinhoDiv = document.getElementById('carrinho');
-  carrinhoDiv.style.display = (carrinhoDiv.style.display==='none' || carrinhoDiv.style.display==='')?'block':'none';
+  const carrinhoDiv=document.getElementById('carrinho');
+  carrinhoDiv.style.display=(carrinhoDiv.style.display==='none'||carrinhoDiv.style.display==='')?'block':'none';
 }
 
 function mostrarHome(){
-  document.getElementById('containerPrincipal').innerHTML = '<div class="loja" id="produtos"></div>';
+  document.getElementById('containerPrincipal').innerHTML='<div class="loja" id="produtos"></div>';
   mostrarProdutos();
 }
 
 function contato(){
-  const link = "https://wa.me/5599988592997?text=" + encodeURIComponent("Olá! Quero mais informações.");
-  window.open(link, "_blank");
+  const link="https://wa.me/5599988592997?text="+encodeURIComponent("Olá! Quero mais informações.");
+  window.open(link,"_blank");
+}
+
+function mostrarPix(){
+  const qrDiv=document.getElementById('qrcode');
+  qrDiv.innerHTML='';
+  new QRCode(qrDiv,{
+    text:`00020126360014BR.GOV.BCB.PIX0114${chavePix}520400005303986540${total.toFixed(2).replace('.','')}5802BR5912Rái Delivery6009Trizidela62290525PagamentoPix6304ABCD`,
+    width:180,
+    height:180
+  });
+  document.getElementById('uploadComprovante').style.display='block';
 }
 
 mostrarProdutos();
