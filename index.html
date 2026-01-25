@@ -5,18 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>São Raimundo Supermercado CT Bebidas</title>
 <style>
-body{font-family:Arial,sans-serif;margin:0;padding:0;background:#fff;color:#333;}
+body{margin:0;font-family:Arial,sans-serif;background:#fff;color:#333;}
 header{background:#c00;color:#fff;padding:10px;text-align:center;}
-header img{max-height:60px;}
-h1{margin:10px 0;}
+header img{max-height:60px;margin-bottom:5px;}
+h1{margin:0;}
 .container{padding:10px;}
-.produto{border:1px solid #ccc;padding:10px;margin:10px 0;display:flex;align-items:center;}
-.produto img{width:80px;height:80px;object-fit:cover;margin-right:10px;}
-.produto button{margin-left:5px;}
+.loja{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
+.produto{border:1px solid #ccc;border-radius:5px;padding:10px;text-align:center;background:#fff;}
+.produto img{width:100%;height:150px;object-fit:cover;border-radius:5px;}
+.produto button{margin-top:5px;background:#c00;color:#fff;border:none;padding:5px 10px;cursor:pointer;border-radius:3px;}
 .carrinho{border-top:2px solid #c00;padding-top:10px;margin-top:10px;}
 .carrinho-item{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ccc;padding:5px 0;}
-button{background:#c00;color:#fff;border:none;padding:5px 8px;cursor:pointer;}
-input[type="number"]{width:50px;}
+button{cursor:pointer;}
+input[type="number"]{width:50px;text-align:center;}
 .total{font-weight:bold;margin-top:10px;}
 .cupom{margin-top:10px;}
 </style>
@@ -28,14 +29,16 @@ input[type="number"]{width:50px;}
   <h1>São Raimundo Supermercado CT Bebidas</h1>
 </header>
 
-<div class="container" id="produtos"></div>
+<div class="container">
+  <div class="loja" id="produtos"></div>
+</div>
 
 <div class="container carrinho">
   <h2>Carrinho</h2>
   <div id="carrinho-itens"></div>
   <div class="total" id="total">Total: R$ 0,00</div>
   <div class="cupom">
-    <label>Digite cupom: </label>
+    <label>Cupom: </label>
     <input type="text" id="cupom">
     <button onclick="aplicarCupom()">Aplicar</button>
     <div id="mensagem-cupom"></div>
@@ -46,50 +49,46 @@ input[type="number"]{width:50px;}
 </div>
 
 <script>
-// Lista de produtos
-  const produtos = [
-  // Produtos que você já adicionou
-  {id:863,nome:"Cerveja Brahma Chopp LT 350ML",preco:3.89,imagem:"img/CERVEJA_BRAHMA_CHOPP_LT_350ML-removebg-preview.png"},
-  {id:1502,nome:"Cerveja Bohemia Long Neck 355ML",preco:4.49,imagem:"img/cerveja.png"},
-  {id:3084,nome:"Cerveja Amstel Lager 600ML",preco:7.99,imagem:"img/cerveja.png"},
-  {id:3499,nome:"Cerveja Antarctica LT 350ML",preco:4.35,imagem:"img/cerveja.png"},
-  {id:10695,nome:"Cerveja Kaiser Latão 473ML",preco:3.95,imagem:"img/cerveja.png"},
-  {id:13043,nome:"Cerveja Skol LT 269ML",preco:3.25,imagem:"img/cerveja.png"},
-  {id:13501,nome:"Cerveja Devassa Loura LN 355ML",preco:3.79,imagem:"img/cerveja.png"},
-  {id:16500,nome:"Cerveja Budweiser 350ML LT",preco:4.75,imagem:"img/cerveja.png"},
-  {id:21479,nome:"Cerveja Skol One Way 1L",preco:4.99,imagem:"img/cerveja.png"},
-  {id:25873,nome:"Cerveja Pilsen Itaipava 350ML",preco:2.70,imagem:"img/cerveja.png"},
-  {id:26698,nome:"Cerveja Itaipava Pilsen 269ML",preco:2.75,imagem:"img/cerveja.png"},
-  {id:30044,nome:"Cerveja Brahma Chopp 269ML",preco:2.79,imagem:"img/cerveja.png"},
-  {id:35821,nome:"Cerveja Eisenbahn Puro Malte 355ML",preco:5.69,imagem:"img/cerveja.png"},
-  {id:38677,nome:"Cerveja Antarctica Original One Way 300ML",preco:4.20,imagem:"img/cerveja.png"},
-  {id:40143,nome:"Cerveja Antarcti Subzero LT 269 ML",preco:1.49,imagem:"img/cerveja.png"},
-  {id:41089,nome:"Cerveja Antarctica Subzero LT 350ML",preco:2.89,imagem:"img/cerveja.png"},
-  {id:41989,nome:"Cerveja Budweiser LNK 330ML",preco:6.49,imagem:"img/cerveja.png"},
-  {id:45393,nome:"Cerveja Lokal Lata 473ML",preco:2.29,imagem:"img/cerveja.png"},
-  {id:45394,nome:"Cerveja Petra 350ML Puro Malte LT",preco:3.10,imagem:"img/cerveja.png"},
-  {id:45395,nome:"Cerveja Lokal Pilsen Lata 350ML",preco:1.89,imagem:"img/cerveja.png"},
-  {id:45994,nome:"Cerveja Petra 355ML Puro Malte LN",preco:4.19,imagem:"img/cerveja.png"},
-  {id:46518,nome:"Cerveja Skol 269ML LT P/Malte",preco:1.49,imagem:"img/cerveja.png"},
-  {id:47233,nome:"Cerveja Itaipava PIL 00 Alcool LT 350ML",preco:2.99,imagem:"img/cerveja.png"},
-  {id:47616,nome:"Cerveja Heineken 600ML Descart",preco:11.69,imagem:"img/cerveja.png"},
-  {id:48167,nome:"Cerveja Stella Artois Long Neck 275ML",preco:5.49,imagem:"img/cerveja.png"},
-  {id:48168,nome:"Cerveja Bohemia Lata 350ML",preco:4.10,imagem:"img/cerveja.png"},
-  {id:48169,nome:"Cerveja Glacial 350ML LT",preco:2.99,imagem:"img/cerveja.png"},
-  {id:48170,nome:"Cerveja Skol Pilsen 350ML LT",preco:3.75,imagem:"img/cerveja.png"},
-  {id:49988,nome:"Cerveja Cacildis Amblag PM LT 350ML",preco:4.10,imagem:"img/cerveja.png"},
-  {id:50066,nome:"Cerveja Brahma D/Malte 350ML LT Sleek",preco:3.99,imagem:"img/cerveja.png"},
-  {id:53946,nome:"Cerveja Heineken 330ML Long Neck",preco:6.95,imagem:"img/cerveja.png"},
-  {id:54172,nome:"Cerveja Amstel 350ML LT",preco:4.35,imagem:"img/cerveja.png"},
-  {id:55949,nome:"Cerveja Magnífica Lata 350ML",preco:2.59,imagem:"img/cerveja.png"},
-  {id:56033,nome:"Cerveja Corona Extra LNK 330ML",preco:8.39,imagem:"img/cerveja.png"},
-  {id:57224,nome:"Cerveja Tiger LT 350ML",preco:3.75,imagem:"img/cerveja.png"},
-  {id:57416,nome:"Cerveja Becks Long Neck 330ML",preco:6.10,imagem:"img/cerveja.png"},
-  {id:57789,nome:"Cerveja Bohemia LT Sleek 350ML",preco:3.89,imagem:"img/cerveja.png"}
-  // ... você pode continuar adicionando o restante da lista seguindo o mesmo padrão
-];
-
-  // ... demais produtos seguindo o padrão acima
+// Lista completa de produtos
+const produtos = [
+{ id: 863, nome:"Cerveja Brahma Chopp LT 350ML", preco:3.89, imagem:"img/CERVEJA_BRAHMA_CHOPP_LT_350ML-removebg-preview.png" },
+{ id: 1502, nome:"Cerveja Bohemia Long Neck 355ML", preco:4.49, imagem:"img/cerveja.png" },
+{ id: 3084, nome:"Cerveja Amstel Lager 600ML", preco:7.99, imagem:"img/cerveja.png" },
+{ id: 3499, nome:"Cerveja Antarctica LT 350ML", preco:4.35, imagem:"img/cerveja.png" },
+{ id: 10695, nome:"Cerveja Kaiser Latão 473ML", preco:3.95, imagem:"img/cerveja.png" },
+{ id: 13043, nome:"Cerveja Skol LT 269ML", preco:3.25, imagem:"img/cerveja.png" },
+{ id: 13501, nome:"Cerveja Devassa Loura LN 355ML", preco:3.79, imagem:"img/cerveja.png" },
+{ id: 16500, nome:"Cerveja Budweiser 350ML LT", preco:4.75, imagem:"img/cerveja.png" },
+{ id: 21479, nome:"Cerveja Skol One Way 1L", preco:4.99, imagem:"img/cerveja.png" },
+{ id: 25873, nome:"Cerveja Pilsen Itaipava 350ML", preco:2.70, imagem:"img/cerveja.png" },
+{ id: 26698, nome:"Cerveja Itaipava Pilsen 269ML", preco:2.75, imagem:"img/cerveja.png" },
+{ id: 30044, nome:"Cerveja Brahma Chopp 269ML", preco:2.79, imagem:"img/cerveja.png" },
+{ id: 35821, nome:"Cerveja Eisenbahn Puro Malte 355ML", preco:5.69, imagem:"img/cerveja.png" },
+{ id: 38677, nome:"Cerveja Antarctica Original One Way 300ML", preco:4.20, imagem:"img/cerveja.png" },
+{ id: 40143, nome:"Cerveja Antarcti Subzero LT 269 ML", preco:1.49, imagem:"img/cerveja.png" },
+{ id: 41089, nome:"Cerveja Antarctica Subzero LT 350ML", preco:2.89, imagem:"img/cerveja.png" },
+{ id: 41989, nome:"Cerveja Budweiser LNK 330ML", preco:6.49, imagem:"img/cerveja.png" },
+{ id: 45393, nome:"Cerveja Lokal Lata 473ML", preco:2.29, imagem:"img/cerveja.png" },
+{ id: 45394, nome:"Cerveja Petra 350ML Puro Malte LT", preco:3.10, imagem:"img/cerveja.png" },
+{ id: 45395, nome:"Cerveja Lokal Pilsen Lata 350ML", preco:1.89, imagem:"img/cerveja.png" },
+{ id: 45994, nome:"Cerveja Petra 355ML Puro Malte LN", preco:4.19, imagem:"img/cerveja.png" },
+{ id: 46518, nome:"Cerveja Skol 269ML LT P/Malte", preco:1.49, imagem:"img/cerveja.png" },
+{ id: 47233, nome:"Cerveja Itaipava PIL 00 Alcool LT350ML", preco:2.99, imagem:"img/cerveja.png" },
+{ id: 47616, nome:"Cerveja Heineken 600ML Descart", preco:11.69, imagem:"img/cerveja.png" },
+{ id: 48167, nome:"Cerveja Stella Artois Long Neck 275ML", preco:5.49, imagem:"img/cerveja.png" },
+{ id: 48168, nome:"Cerveja Bohemia Lata 350ML", preco:4.10, imagem:"img/cerveja.png" },
+{ id: 48169, nome:"Cerveja Glacial 350ML LT", preco:2.99, imagem:"img/cerveja.png" },
+{ id: 48170, nome:"Cerveja Skol Pilsen 350ML LT", preco:3.75, imagem:"img/cerveja.png" },
+{ id: 49988, nome:"Cerveja Cacildis Amblag PM LT 350ML", preco:4.10, imagem:"img/cerveja.png" },
+{ id: 50066, nome:"Cerveja Brahma D/Malte 350ML LT Sleek", preco:3.99, imagem:"img/cerveja.png" },
+{ id: 53946, nome:"Cerveja Heineken 330ML Long Neck", preco:6.95, imagem:"img/cerveja.png" },
+{ id: 54172, nome:"Cerveja Amstel 350ML LT", preco:4.35, imagem:"img/cerveja.png" },
+{ id: 55949, nome:"Cerveja Magnífica Lata 350ML", preco:2.59, imagem:"img/cerveja.png" },
+{ id: 56033, nome:"Cerveja Corona Extra LNK 330ML", preco:8.39, imagem:"img/cerveja.png" },
+{ id: 57224, nome:"Cerveja Tiger LT 350ML", preco:3.75, imagem:"img/cerveja.png" },
+{ id: 57416, nome:"Cerveja Becks Long Neck 330ML", preco:6.10, imagem:"img/cerveja.png" },
+{ id: 57789, nome:"Cerveja Bohemia LT Sleek 350ML", preco:3.89, imagem:"img/cerveja.png" }
+// Continue adicionando o restante da sua lista completa seguindo este padrão
 ];
 
 let carrinho = [];
@@ -104,11 +103,9 @@ function mostrarProdutos(){
     prodDiv.className='produto';
     prodDiv.innerHTML = `
       <img src="${p.imagem}" alt="${p.nome}">
-      <div>
-        <strong>${p.nome}</strong><br>
-        R$ ${p.preco.toFixed(2)}
-      </div>
-      <button onclick="adicionarCarrinho(${p.id})">Adicionar</button>
+      <h3>${p.nome}</h3>
+      <p>R$ ${p.preco.toFixed(2)}</p>
+      <button onclick="adicionarCarrinho(${p.id})">Adicionar ao carrinho</button>
     `;
     div.appendChild(prodDiv);
   });
