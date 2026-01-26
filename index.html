@@ -12,6 +12,8 @@ header img { height:50px; object-fit:contain; }
 header h1 { margin:0; font-size:1.5em; }
 .cart { position:relative; cursor:pointer; }
 .cart-count { position:absolute; top:-5px; right:-10px; background:#fff; color:red; font-weight:bold; border-radius:50%; padding:2px 6px; font-size:0.8em; }
+#categoria-buttons { display:flex; gap:10px; padding:10px; justify-content:center; flex-wrap:wrap; }
+#categoria-buttons button { background:red; color:#fff; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; }
 .product-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:10px; padding:10px; }
 .product { border:1px solid #ccc; border-radius:5px; padding:10px; text-align:center; background:#fff; }
 .product img { width:100%; height:120px; object-fit:contain; margin-bottom:5px; }
@@ -37,6 +39,7 @@ header h1 { margin:0; font-size:1.5em; }
     </div>
 </header>
 
+<div id="categoria-buttons"></div>
 <main id="products" class="product-grid"></main>
 
 <div class="cart-modal" id="cart-modal">
@@ -71,36 +74,58 @@ header h1 { margin:0; font-size:1.5em; }
 </div>
 
 <script>
-// 80 cervejas placeholder
-const produtos = [
-{id:1,nome:"CERVEJA BRAHMA CHOPP LT 350ML",preco:3.89,imagem:"img/cerveja1.png"},
-{id:2,nome:"CERVEJA BOHEMIA LONG NECK 355ML",preco:4.49,imagem:"img/cerveja2.png"},
-{id:3,nome:"CERVEJA AMSTEL LAGER 600ML",preco:7.99,imagem:"img/cerveja3.png"},
-{id:4,nome:"CERVEJA ANTARCTICA LT 350ML",preco:4.35,imagem:"img/cerveja4.png"},
-{id:5,nome:"CERVEJA KAISER LATÃO 473ML",preco:3.95,imagem:"img/cerveja5.png"},
-{id:6,nome:"CERVEJA SKOL LT 269ML",preco:3.25,imagem:"img/cerveja6.png"},
-{id:7,nome:"CERVEJA DEVASSA LOURA LN 355ML",preco:3.79,imagem:"img/cerveja7.png"},
-{id:8,nome:"CERVEJA BUDWEISER 350ML LT",preco:4.75,imagem:"img/cerveja8.png"},
-{id:9,nome:"CERVEJA SKOL ONE WAY 1L",preco:4.99,imagem:"img/cerveja9.png"},
-{id:10,nome:"CERVEJA PILSEN ITAIPAVA 350ML",preco:2.70,imagem:"img/cerveja10.png"},
-// ... complete até 80 cervejas com img/cerveja11.png a img/cerveja80.png
-{id:80,nome:"CERVEJA ANTARCTICA PREMIUM 350ML",preco:4.55,imagem:"img/cerveja80.png"}
+// Categorias
+const categorias = [
+  {id:'cervejas', nome:'Cervejas'},
+  {id:'refrigerantes', nome:'Refrigerantes'},
+  {id:'aguas', nome:'Água'}
 ];
 
-// Renderização produtos
+// Produtos
+const produtos = [
+{id:1,nome:"CERVEJA BRAHMA CHOPP LT 350ML",preco:3.89,imagem:"img/cerveja1.png",categoria:"cervejas"},
+{id:2,nome:"CERVEJA BOHEMIA LONG NECK 355ML",preco:4.49,imagem:"img/cerveja2.png",categoria:"cervejas"},
+// ... até a 80 cervejas
+{id:80,nome:"CERVEJA ANTARCTICA PREMIUM 350ML",preco:4.55,imagem:"img/cerveja80.png",categoria:"cervejas"},
+// Refrigerantes exemplo
+{id:81,nome:"COCA COLA 2L",preco:9.50,imagem:"img/coca2l.png",categoria:"refrigerantes"},
+{id:82,nome:"PEPSI 2L",preco:9.00,imagem:"img/pepsi2l.png",categoria:"refrigerantes"},
+// Águas exemplo
+{id:101,nome:"ÁGUA MINERAL 500ML",preco:2.50,imagem:"img/agua500.png",categoria:"aguas"},
+{id:102,nome:"ÁGUA MINERAL 1L",preco:4.50,imagem:"img/agua1l.png",categoria:"aguas"}
+];
+
+const categoriaButtons = document.getElementById('categoria-buttons');
 const productsContainer = document.getElementById('products');
-produtos.forEach(p=>{
+
+// Botões de categoria
+categorias.forEach(cat=>{
+  const btn = document.createElement('button');
+  btn.innerText = cat.nome;
+  btn.onclick = ()=> renderProdutos(cat.id);
+  categoriaButtons.appendChild(btn);
+});
+
+// Render produtos por categoria
+function renderProdutos(categoriaId){
+  productsContainer.innerHTML = '';
+  const filtrados = produtos.filter(p => p.categoria === categoriaId);
+  filtrados.forEach(p=>{
     const div = document.createElement('div');
     div.className = 'product';
     div.innerHTML = `
-        <img src="${p.imagem}" alt="${p.nome}">
-        <h4>${p.nome}</h4>
-        <p>R$ ${p.preco.toFixed(2)}</p>
-        <input type="number" id="qty-${p.id}" value="1" min="1" style="width:40px">
-        <button onclick="addToCart(${p.id})">Adicionar</button>
+      <img src="${p.imagem}" alt="${p.nome}">
+      <h4>${p.nome}</h4>
+      <p>R$ ${p.preco.toFixed(2)}</p>
+      <input type="number" id="qty-${p.id}" value="1" min="1" style="width:40px">
+      <button onclick="addToCart(${p.id})">Adicionar</button>
     `;
     productsContainer.appendChild(div);
-});
+  });
+}
+
+// Inicializa com Cervejas
+renderProdutos('cervejas');
 
 let cart = [];
 
