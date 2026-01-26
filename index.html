@@ -71,18 +71,23 @@
 </div>
 
 <script>
-// Lista completa com 80 cervejas (placeholders de imagens)
+// 80 cervejas com placeholder img
 const produtos = [
-{id:1,nome:"CERVEJA BRAHMA CHOPP LT 350ML",preco:3.89,imagem:"img/Cerveja_Brahma_Chopp_LT_350ML.png"},
-{id:2,nome:"CERVEJA BOHEMIA LONG NECK 355ML",preco:4.49,imagem:"img/Cerveja_Bohemia_Long_Neck_355ML.png"},
-{id:3,nome:"CERVEJA AMSTEL LAGER 600ML",preco:7.99,imagem:"img/Cerveja_Amstel_Lager_600ML.png"},
-{id:4,nome:"CERVEJA ANTARCTICA LT 350ML",preco:4.35,imagem:"img/Cerveja_Antarctica_350ML.png"},
-{id:5,nome:"CERVEJA KAISER LATÃO 473ML",preco:3.95,imagem:"img/Cerveja_Kaiser_LT_473ML.png"},
-// ... aqui você continua com todas as 80 cervejas com imagens placeholders ...
-{id:80,nome:"CERVEJA ANTARCTICA PREMIUM 350ML",preco:4.55,imagem:"img/Cerveja_Antarctica_Premium_350ML.png"}
+{id:1,nome:"CERVEJA BRAHMA CHOPP LT 350ML",preco:3.89,imagem:"img/cerveja1.png"},
+{id:2,nome:"CERVEJA BOHEMIA LONG NECK 355ML",preco:4.49,imagem:"img/cerveja2.png"},
+{id:3,nome:"CERVEJA AMSTEL LAGER 600ML",preco:7.99,imagem:"img/cerveja3.png"},
+{id:4,nome:"CERVEJA ANTARCTICA LT 350ML",preco:4.35,imagem:"img/cerveja4.png"},
+{id:5,nome:"CERVEJA KAISER LATÃO 473ML",preco:3.95,imagem:"img/cerveja5.png"},
+{id:6,nome:"CERVEJA SKOL LT 269ML",preco:3.25,imagem:"img/cerveja6.png"},
+{id:7,nome:"CERVEJA DEVASSA LOURA LN 355ML",preco:3.79,imagem:"img/cerveja7.png"},
+{id:8,nome:"CERVEJA BUDWEISER 350ML LT",preco:4.75,imagem:"img/cerveja8.png"},
+{id:9,nome:"CERVEJA SKOL ONE WAY 1L",preco:4.99,imagem:"img/cerveja9.png"},
+{id:10,nome:"CERVEJA PILSEN ITAIPAVA 350ML",preco:2.70,imagem:"img/cerveja10.png"},
+// ... continue até a 80 ...
+{id:80,nome:"CERVEJA ANTARCTICA PREMIUM 350ML",preco:4.55,imagem:"img/cerveja80.png"}
 ];
 
-// Renderização de produtos
+// Renderização
 const productsContainer = document.getElementById('products');
 produtos.forEach(p=>{
     const div = document.createElement('div');
@@ -147,13 +152,11 @@ function updateCart(){
     document.getElementById('cart-count').innerText = cart.reduce((acc,c)=>acc+c.quantidade,0);
 }
 
-// Modal Carrinho
 function toggleCart(){
     const modal = document.getElementById('cart-modal');
     modal.style.display = modal.style.display==='flex'?'none':'flex';
 }
 
-// Pagamento
 document.getElementById('payment-method').addEventListener('change',e=>{
     document.getElementById('pix-section').style.display = e.target.value==='pix'?'block':'none';
 });
