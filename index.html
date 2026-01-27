@@ -7,53 +7,176 @@
 
 <style>
 body{margin:0;font-family:Arial;background:#f5f5f5}
-header{background:#c40000;color:#fff;padding:10px;display:flex;align-items:center;justify-content:space-between}
+
+header{
+background:#c40000;
+color:#fff;
+padding:10px;
+display:flex;
+align-items:center;
+justify-content:space-between
+}
+
 header img{height:45px}
-.cart-icon{position:relative;font-size:24px;cursor:pointer}
-.cart-count{position:absolute;top:-5px;right:-8px;background:#fff;color:#c40000;border-radius:50%;font-size:12px;padding:2px 6px}
 
-.categories{display:flex;justify-content:center;gap:10px;background:#fff;padding:10px}
-.categories button{border:none;padding:8px 15px;border-radius:20px;background:#eee;cursor:pointer}
-.categories button.active{background:#c40000;color:#fff}
+.cart-icon{
+position:relative;
+font-size:24px;
+cursor:pointer
+}
 
-.products{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;padding:10px}
-.product{background:#fff;border-radius:10px;padding:10px;text-align:center;box-shadow:0 0 5px rgba(0,0,0,.1)}
-.product img{width:100%;height:120px;object-fit:contain}
-.product h4{font-size:13px;height:40px}
+.cart-count{
+position:absolute;
+top:-5px;
+right:-8px;
+background:#fff;
+color:#c40000;
+border-radius:50%;
+font-size:12px;
+padding:2px 6px
+}
 
-.qty-box{display:flex;justify-content:center;gap:5px;margin:5px}
+.categories{
+display:flex;
+justify-content:center;
+gap:10px;
+background:#fff;
+padding:10px
+}
+
+.categories button{
+border:none;
+padding:8px 15px;
+border-radius:20px;
+background:#eee;
+cursor:pointer
+}
+
+.categories button.active{
+background:#c40000;
+color:#fff
+}
+
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+gap:10px;
+padding:10px
+}
+
+.product{
+background:#fff;
+border-radius:10px;
+padding:10px;
+text-align:center;
+box-shadow:0 0 5px rgba(0,0,0,.1)
+}
+
+.product img{
+width:100%;
+height:120px;
+object-fit:contain
+}
+
+.product h4{font-size:14px}
+
+.qty-box{
+display:flex;
+justify-content:center;
+gap:5px;
+margin:5px
+}
+
 .qty-box button{width:25px}
-.qty-box input{width:40px;text-align:center}
 
-.product button{background:#c40000;color:#fff;border:none;padding:6px 10px;border-radius:5px;cursor:pointer}
+.qty-box input{
+width:40px;
+text-align:center
+}
 
-#cart{position:fixed;top:0;right:-100%;width:100%;max-width:400px;height:100%;background:#fff;z-index:10;transition:.3s;overflow:auto}
+.product button{
+background:#c40000;
+color:#fff;
+border:none;
+padding:6px 10px;
+border-radius:5px;
+cursor:pointer
+}
+
+#cart{
+position:fixed;
+top:0;
+right:-100%;
+width:100%;
+max-width:400px;
+height:100%;
+background:#fff;
+z-index:10;
+transition:.3s;
+overflow:auto
+}
+
 #cart.active{right:0}
-.cart-header{background:#c40000;color:#fff;padding:10px;display:flex;justify-content:space-between}
 
-.cart-item{display:flex;justify-content:space-between;padding:5px;border-bottom:1px solid #ddd;font-size:14px}
+.cart-header{
+background:#c40000;
+color:#fff;
+padding:10px;
+display:flex;
+justify-content:space-between
+}
+
+.cart-item{
+display:flex;
+justify-content:space-between;
+padding:5px;
+border-bottom:1px solid #ddd;
+font-size:14px
+}
+
 .cart-controls button{width:25px}
 
-.total{padding:10px;font-weight:bold}
+.total{
+padding:10px;
+font-weight:bold
+}
 
 .payment{padding:10px}
-.payment select,.payment input{width:100%;margin:5px 0;padding:5px}
+
+.payment select{
+width:100%;
+margin:5px 0;
+padding:5px
+}
 
 #pix-qr img{width:150px}
 
-#map{width:100%;height:220px;display:none;margin-top:10px;border-radius:10px}
+#map{
+width:100%;
+height:200px;
+display:none;
+margin-top:10px
+}
 
-.map-actions{display:none;text-align:center;margin-top:5px}
-.map-actions button{background:#c40000;color:#fff;border:none;padding:6px 10px;border-radius:5px;cursor:pointer}
-
-.checkout{background:#c40000;color:#fff;border:none;width:100%;padding:12px;font-size:16px;cursor:pointer}
+.checkout{
+background:#c40000;
+color:#fff;
+border:none;
+width:100%;
+padding:10px;
+font-size:16px;
+cursor:pointer
+}
 </style>
 </head>
+
 <body>
 
 <header>
-  <img src="img/logo-top.png" alt="Rái Delivery">
-  <div class="cart-icon" onclick="toggleCart()">🛒<span id="cartCount" class="cart-count">0</span></div>
+<img src="img/logo-top.png">
+<div class="cart-icon" onclick="toggleCart()">
+🛒<span id="cartCount" class="cart-count">0</span>
+</div>
 </header>
 
 <div class="categories">
@@ -66,12 +189,14 @@ header img{height:45px}
 
 <!-- CARRINHO -->
 <div id="cart">
+
 <div class="cart-header">
 <h3>Carrinho</h3>
 <button onclick="toggleCart()">X</button>
 </div>
 
 <div id="cartItems"></div>
+
 <div class="total" id="total"></div>
 
 <div class="payment">
@@ -90,14 +215,9 @@ header img{height:45px}
 <div id="pix-section" style="display:none">
 <button onclick="generatePix()">Gerar QR Pix</button>
 <div id="pix-qr"></div>
-<input type="file" accept="image/*">
 </div>
 
 <div id="map"></div>
-
-<div class="map-actions" id="mapActions">
-<button onclick="openRoute()">Abrir rota no Google Maps</button>
-</div>
 
 <button class="checkout" onclick="checkout()">Finalizar Pedido</button>
 
@@ -105,95 +225,131 @@ header img{height:45px}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
 <script>
 
-// COORDENADAS DA LOJA
-const lojaLat = -5.5283;
-const lojaLng = -47.4867;
-
 let produtos=[
-{ id:1,nome:"CERVEJA BRAHMA CHOPP LT 350ML",preco:3.89,cat:"cerveja",img:"img/beer.png"},
-{ id:2,nome:"CERVEJA AMSTEL LAGER 600ML",preco:7.99,cat:"cerveja",img:"img/beer.png"},
-{ id:3,nome:"CERVEJA ANTARCTICA LT 350ML",preco:4.35,cat:"cerveja",img:"img/beer.png"},
-{ id:4,nome:"CERVEJA KAISER LATÃO 473ML",preco:3.95,cat:"cerveja",img:"img/beer.png"},
-{ id:5,nome:"CERVEJA SKOL LT 269ML",preco:3.25,cat:"cerveja",img:"img/beer.png"},
 
+// CERVEJAS
+{ id:1,nome:"CERVEJA BRAHMA CHOPP LT 350ML",preco:3.89,cat:"cerveja",img:"img/Cerveja Brahma Chopp LT 350ML.png"},
+{ id:3,nome:"CERVEJA AMSTEL LAGER 600ML",preco:7.99,cat:"cerveja",img:"img/CERVEJA_AMSTEL_LAGER_600ML.png"},
+{ id:4,nome:"CERVEJA ANTARCTICA LT 350ML",preco:4.35,cat:"cerveja",img:"img/Cerveja antarctica 350ml.png"},
+{ id:5,nome:"CERVEJA KAISER LATÃO 473ML",preco:3.95,cat:"cerveja",img:"img/cerveja kaiser lt 473ml.png"},
+{ id:6,nome:"CERVEJA SKOL LT 269ML",preco:3.25,cat:"cerveja",img:"img/CERVEJA SKOL LT 269ML.png"},
+{ id:8,nome:"CERVEJA BUDWEISER LT 350ML",preco:4.75,cat:"cerveja",img:"img/CERVEJA BUDWEISER LT 350ML.png"},
+{ id:12,nome:"CERVEJA BRAHMA CHOPP 269ML",preco:2.79,cat:"cerveja",img:"img/CERVEJA_BRAHMA_CHOPP_269ML.png"},
+{ id:13,nome:"CERVEJA EISENBAHN PURO MALTE 355ML",preco:5.69,cat:"cerveja",img:"img/CERVEJA_EISENBAHN_PURO_MALTE_355ML.png"},
+{ id:17,nome:"CERVEJA BUDWEISER LN 330ML",preco:6.49,cat:"cerveja",img:"img/CERVEJA_BUDWEISER_LN_330ML.png"},
+{ id:19,nome:"CERVEJA PETRA PURO MALTE 350ML",preco:3.10,cat:"cerveja",img:"img/CERVEJA_PETRA_PURO_MALTE_350ML.png"},
+{ id:21,nome:"CERVEJA PETRA LN 355ML",preco:4.19,cat:"cerveja",img:"img/CERVEJA_PETRA_LN_355ML.png"},
+{ id:22,nome:"CERVEJA SKOL PURO MALTE 269ML",preco:1.49,cat:"cerveja",img:"img/CERVEJA_SKOL_PURO_MALTE_269ML.png"},
+{ id:24,nome:"CERVEJA HEINEKEN 600ML",preco:11.69,cat:"cerveja",img:"img/CERVEJA_HEINEKEN_600ML.png"},
+{ id:27,nome:"CERVEJA GLACIAL 350ML",preco:2.99,cat:"cerveja",img:"img/CERVEJA_GLACIAL_350ML.png"},
+{ id:28,nome:"CERVEJA SKOL PILSEN 350ML",preco:3.75,cat:"cerveja",img:"img/CERVEJA_SKOL_PILSEN_350ML.png"},
+{ id:30,nome:"CERVEJA BRAHMA DUPLO MALTE 350ML",preco:3.99,cat:"cerveja",img:"img/CERVEJA_BRAHMA_DUPLO_MALTE_350ML.png"},
+{ id:31,nome:"CERVEJA HEINEKEN LN 330ML",preco:6.95,cat:"cerveja",img:"img/CERVEJA_HEINEKEN_LN_330ML.png"},
+{ id:32,nome:"CERVEJA AMSTEL 350ML",preco:4.35,cat:"cerveja",img:"img/CERVEJA_AMSTEL_350ML.png"},
+{ id:34,nome:"CERVEJA CORONA EXTRA 330ML",preco:8.39,cat:"cerveja",img:"img/CERVEJA_CORONA_EXTRA_330ML.png"},
+
+// REFRI
 { id:200,nome:"Coca-Cola 2L",preco:9.99,cat:"refri",img:"img/refri.png"},
 { id:201,nome:"Guaraná Antarctica 2L",preco:8.99,cat:"refri",img:"img/refri.png"},
+{ id:202,nome:"Fanta Laranja 2L",preco:7.99,cat:"refri",img:"img/refri.png"},
+{ id:203,nome:"Sprite 2L",preco:7.49,cat:"refri",img:"img/refri.png"},
 
+// ÁGUA
 { id:300,nome:"Água Mineral 500ml",preco:2.50,cat:"agua",img:"img/agua.png"},
-{ id:301,nome:"Água Mineral 1.5L",preco:4.00,cat:"agua",img:"img/agua.png"}
+{ id:301,nome:"Água Mineral 1.5L",preco:4.00,cat:"agua",img:"img/agua.png"},
+{ id:302,nome:"Água Mineral 5L",preco:7.50,cat:"agua",img:"img/agua.png"}
+
 ];
 
 let cart=[];
 let currentCategory='cerveja';
 
-// RENDER
 function renderProducts(){
 const div=document.getElementById('products');
 div.innerHTML="";
 
 produtos.filter(p=>p.cat===currentCategory).forEach(p=>{
+
 let el=document.createElement('div');
 el.className="product";
+
 el.innerHTML=`
 <img src="${p.img}">
 <h4>${p.nome}</h4>
 <p>R$ ${p.preco.toFixed(2)}</p>
+
 <div class="qty-box">
 <button onclick="changeQty(${p.id},-1)">-</button>
 <input id="qty-${p.id}" type="number" value="1" min="1">
 <button onclick="changeQty(${p.id},1)">+</button>
 </div>
+
 <button onclick="addToCart(${p.id})">Adicionar</button>
 `;
+
 div.appendChild(el);
+
 });
 }
 
-// QTD PRODUTO
 function changeQty(id,delta){
+
 let input=document.getElementById(`qty-${id}`);
 let v=parseInt(input.value)+delta;
+
 if(v<1)v=1;
+
 input.value=v;
 }
 
-// ADD CARRINHO
 function addToCart(id){
+
 let p=produtos.find(x=>x.id===id);
 let q=parseInt(document.getElementById(`qty-${id}`).value);
 let e=cart.find(x=>x.id===id);
 
-if(e){ e.qtd=q; }
-else{ cart.push({...p,qtd:q}); }
+if(e){
+e.qtd=q;
+}else{
+cart.push({...p,qtd:q});
+}
 
 updateCart();
 }
 
-// UPDATE CART
 function updateCart(){
+
 const div=document.getElementById('cartItems');
 div.innerHTML="";
+
 let total=0;
 let count=0;
 
 cart.forEach(i=>{
+
 let sub=i.preco*i.qtd;
+
 total+=sub;
 count+=i.qtd;
 
 let el=document.createElement('div');
 el.className="cart-item";
+
 el.innerHTML=`
 <span>${i.nome} (${i.qtd})</span>
+
 <div class="cart-controls">
 <button onclick="cartQty(${i.id},-1)">-</button>
 <button onclick="cartQty(${i.id},1)">+</button>
 <button onclick="removeItem(${i.id})">X</button>
 </div>
 `;
+
 div.appendChild(el);
+
 });
 
 document.getElementById('total').innerText=`Total: R$ ${total.toFixed(2)}`;
@@ -201,83 +357,100 @@ document.getElementById('cartCount').innerText=count;
 }
 
 function cartQty(id,d){
+
 let i=cart.find(x=>x.id===id);
-if(i){ i.qtd+=d; if(i.qtd<1)i.qtd=1; }
+
+if(i){
+i.qtd+=d;
+if(i.qtd<1)i.qtd=1;
+}
+
 updateCart();
 }
 
 function removeItem(id){
+
 cart=cart.filter(x=>x.id!==id);
 updateCart();
 }
 
 function toggleCart(){
+
 document.getElementById('cart').classList.toggle('active');
 }
 
 function filterCategory(cat,btn){
+
 currentCategory=cat;
-document.querySelectorAll('.categories button').forEach(b=>b.classList.remove('active'));
+
+document.querySelectorAll('.categories button')
+.forEach(b=>b.classList.remove('active'));
+
 btn.classList.add('active');
+
 renderProducts();
 }
 
 // PIX
 function generatePix(){
+
 let total=cart.reduce((a,b)=>a+b.preco*b.qtd,0).toFixed(2);
+
 let chave="99981050024";
+
 let payload=`PIX R$ ${total} | ${chave}`;
 
 QRCode.toDataURL(payload,(e,url)=>{
+
 document.getElementById('pix-qr').innerHTML=`<img src="${url}">`;
+
 });
 }
 
-// ENTREGA / RETIRADA
-document.getElementById('delivery-type').addEventListener('change',e=>{
+// MAPA
+document.getElementById('delivery-type')
+.addEventListener('change',e=>{
+
 let map=document.getElementById('map');
-let actions=document.getElementById('mapActions');
 
 if(e.target.value==="retirada"){
 map.style.display="block";
-actions.style.display="block";
 initMap();
 }else{
 map.style.display="none";
-actions.style.display="none";
 }
+
 });
 
-// MAPA
 function initMap(){
 
 let mapa = new google.maps.Map(document.getElementById("map"),{
-center:{lat:lojaLat,lng:lojaLng},
+center:{lat:-5.5283,lng:-47.4867},
 zoom:17
 });
 
 new google.maps.Marker({
-position:{lat:lojaLat,lng:lojaLng},
+position:{lat:-5.5283,lng:-47.4867},
 map: mapa,
 title:"Rái Delivery"
 });
-}
 
-// ROTA
-function openRoute(){
-window.open(`https://www.google.com/maps/dir/?api=1&destination=${lojaLat},${lojaLng}`,'_blank');
 }
 
 // PAGAMENTO
-document.getElementById('payment-method').addEventListener('change',e=>{
+document.getElementById('payment-method')
+.addEventListener('change',e=>{
+
 document.getElementById('pix-section').style.display=
 e.target.value==="pix"?"block":"none";
+
 });
 
 // FINALIZAR
 function checkout(){
 
 let tipo = document.getElementById("delivery-type").value;
+
 let total = cart.reduce((a,b)=>a+b.preco*b.qtd,0);
 
 if(tipo==="entrega" && total < 100){
@@ -286,7 +459,8 @@ return;
 }
 
 let msg="Pedido Rái Delivery%0A%0A";
-msg += "Tipo: " + (tipo==="entrega"?"Entrega":"Retirada") + "%0A%0A";
+
+msg += "Tipo: " + (tipo==="entrega" ? "Entrega" : "Retirada no Local") + "%0A%0A";
 
 cart.forEach(i=>{
 msg+=`${i.nome} x${i.qtd} = R$ ${(i.preco*i.qtd).toFixed(2)}%0A`;
@@ -295,6 +469,7 @@ msg+=`${i.nome} x${i.qtd} = R$ ${(i.preco*i.qtd).toFixed(2)}%0A`;
 msg+=`%0ATotal: R$ ${total.toFixed(2)}`;
 
 let tel="559998105024";
+
 window.open(`https://wa.me/${tel}?text=${msg}`,'_blank');
 
 cart=[];
@@ -306,8 +481,7 @@ renderProducts();
 
 </script>
 
-<!-- TROQUE PELA SUA CHAVE -->
-<script async src="https://maps.googleapis.com/maps/api/js?key=SEU_API_KEY"></script>
+<script async src="https://maps.googleapis.com/maps/api/js?key=SUA_API_KEY_AQUI"></script>
 
 </body>
 </html>
