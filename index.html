@@ -5,17 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rái Delivery</title>
 
+<style>
+
 body{
 margin:0;
 font-family:Arial;
 background:#f5f5f5;
 
 /* espaço pro topo fixo */
-padding-top:160px;
+padding-top:120px;
 }
 
 header{
-background-image: url("./img/logo-top.png");
+background-image: url("img/logo-top.png");
 background-repeat: no-repeat;
 background-position: center;
 background-size: contain;
@@ -23,24 +25,25 @@ background-color:#c40000;
 
 height:100px;
 
-display:flex;
-align-items:center;
-justify-content:flex-end;
-
-padding:0 15px;
-
-/* FIXAR NO TOPO */
+/* FIXO NO TOPO */
 position:fixed;
 top:0;
 left:0;
 width:100%;
 z-index:1000;
+
+display:flex;
+align-items:center;
+justify-content:flex-end;
+
+padding:0 15px;
 }
 
 .cart-icon{
 position:relative;
 font-size:24px;
-cursor:pointer
+cursor:pointer;
+color:white;
 }
 
 .cart-count{
@@ -129,7 +132,7 @@ width:100%;
 max-width:400px;
 height:100%;
 background:#fff;
-z-index:10;
+z-index:2000;
 transition:.3s;
 overflow:auto
 }
@@ -185,6 +188,10 @@ padding:10px;
 font-size:16px;
 cursor:pointer
 }
+
+</style>
+</head>
+
 </style>
 </head>
 
