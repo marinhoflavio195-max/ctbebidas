@@ -393,6 +393,7 @@ render();
 }
 
 /* ===== FINALIZAR ===== */
+<script>
 function finalizar(){
 
 if(cart.length==0){
@@ -400,28 +401,44 @@ alert("Carrinho vazio!");
 return;
 }
 
-let total=cart.reduce((a,b)=>a+b.preco*b.qtd,0);
+/* CAMPOS */
+let nome = document.getElementById("nome").value.trim();
+let fone = document.getElementById("fone").value.trim();
+let endereco = document.getElementById("endereco").value.trim();
+let ref = document.getElementById("ref").value.trim();
 
-let tipo=document.getElementById("tipo").value;
+let tipo = document.getElementById("tipo").value;
 
-/* REGRA ENTREGA 80 */
-if(tipo=="entrega" && total<80){
-alert("Entrega somente para pedidos acima de R$ 80,00");
+/* VALIDAÇÃO */
+if(nome=="" || fone==""){
+alert("Preencha Nome e Telefone!");
 return;
 }
 
-alert("Pedido enviado com sucesso!");
+/* SE FOR ENTREGA */
+if(tipo=="entrega"){
+
+if(endereco=="" || ref==""){
+alert("Para entrega, preencha Endereço e Referência!");
+return;
+}
+
+}
+
+/* TOTAL */
+let total = cart.reduce((a,b)=>a+b.preco*b.qtd,0);
+
+/* REGRA ENTREGA 80 */
+if(tipo=="entrega" && total<80){
+alert("Entrega somente acima de R$ 80,00");
+return;
+}
+
+alert("Pedido enviado com sucesso! ✅");
 
 cart=[];
 update();
 toggleCart();
 
 }
-
-/* START */
-render();
-
 </script>
-
-</body>
-</html>
