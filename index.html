@@ -336,7 +336,7 @@ let q=parseInt(document.getElementById("q"+id).value);
 let e=cart.find(x=>x.id==id);
 
 if(e){
-e.qtd += q;
+e.qtd = q;
 }else{
 cart.push({...p,qtd:q});
 }
