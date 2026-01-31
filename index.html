@@ -194,7 +194,7 @@ border-radius:5px;
 
 <header>
 <div class="cart-icon" onclick="toggleCart()">
-🛒<span id="count" class="cart-count">0</span>
+🛒 <span id="count" class="cart-count">0</span>
 </div>
 </header>
 
@@ -242,13 +242,13 @@ border-radius:5px;
 <button class="checkout" onclick="finalizar()">Finalizar Pedido</button>
 
 </div>
-
 </div>
 
 <script>
 
-/* ===== PRODUTOS (NÃO ALTERADO) ===== */
+/* ===== PRODUTOS ===== */
 let produtos = [
+
 { id:1,nome:"BRAHMA CHOPP 350ML",preco:3.89,cat:"cerveja",img:"img/Cerveja Brahma Chopp LT 350ML.png"},
 { id:3,nome:"AMSTEL 600ML",preco:7.99,cat:"cerveja",img:"img/CERVEJA_AMSTEL_LAGER_600ML.png"},
 { id:4,nome:"ANTARCTICA 350ML",preco:4.35,cat:"cerveja",img:"img/Cerveja antarctica 350ml.png"},
@@ -273,6 +273,7 @@ let produtos = [
 { id:201,nome:"Guaraná 2L",preco:8.99,cat:"refri",img:"img/refri.png"},
 
 { id:300,nome:"Água 500ml",preco:2.5,cat:"agua",img:"img/agua.png"}
+
 ];
 
 let cart=[];
@@ -284,7 +285,8 @@ function render(){
 let div=document.getElementById("products");
 div.innerHTML="";
 
-produtos.filter(p=>p.cat==categoria)
+produtos
+.filter(p=>p.cat==categoria)
 .forEach(p=>{
 
 div.innerHTML+=`
@@ -319,7 +321,8 @@ function qtd(id,d){
 let i=document.getElementById("q"+id);
 let v=parseInt(i.value)+d;
 
-if(v<1)v=1;
+if(v<1) v=1;
+
 i.value=v;
 
 }
@@ -366,9 +369,7 @@ ${i.nome} (${i.qtd})
 
 });
 
-document.getElementById("total").innerText=
-"Total: R$ "+total.toFixed(2);
-
+document.getElementById("total").innerText="Total: R$ "+total.toFixed(2);
 document.getElementById("count").innerText=c;
 
 }
@@ -400,7 +401,6 @@ alert("Carrinho vazio!");
 return;
 }
 
-/* CAMPOS */
 let nome = document.getElementById("nome").value.trim();
 let fone = document.getElementById("fone").value.trim();
 let endereco = document.getElementById("endereco").value.trim();
@@ -414,11 +414,10 @@ alert("Preencha Nome e Telefone!");
 return;
 }
 
-/* SE FOR ENTREGA */
 if(tipo=="entrega"){
 
 if(endereco=="" || ref==""){
-alert("Para entrega, preencha Endereço e Referência!");
+alert("Preencha Endereço e Referência!");
 return;
 }
 
@@ -427,16 +426,26 @@ return;
 /* TOTAL */
 let total = cart.reduce((a,b)=>a+b.preco*b.qtd,0);
 
-/* REGRA ENTREGA 80 */
+/* REGRA 80 */
 if(tipo=="entrega" && total<80){
 alert("Entrega somente acima de R$ 80,00");
 return;
 }
 
-alert("Pedido enviado com sucesso! ✅");
+alert("Pedido enviado com sucesso!");
 
 cart=[];
 update();
 toggleCart();
 
 }
+
+/* START */
+window.onload = function(){
+render();
+}
+
+</script>
+
+</body>
+</html>
