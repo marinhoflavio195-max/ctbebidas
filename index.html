@@ -336,7 +336,7 @@ let q=parseInt(document.getElementById("q"+id).value);
 let e=cart.find(x=>x.id==id);
 
 if(e){
-e.qtd = q;
+e.qtd += q;
 }else{
 cart.push({...p,qtd:q});
 }
@@ -405,8 +405,8 @@ let nome = document.getElementById("nome").value.trim();
 let fone = document.getElementById("fone").value.trim();
 let endereco = document.getElementById("endereco").value.trim();
 let ref = document.getElementById("ref").value.trim();
-
 let tipo = document.getElementById("tipo").value;
+let pagamento = document.getElementById("pagamento").value;
 
 /* VALIDAÇÃO */
 if(nome=="" || fone==""){
@@ -415,12 +415,10 @@ return;
 }
 
 if(tipo=="entrega"){
-
 if(endereco=="" || ref==""){
 alert("Preencha Endereço e Referência!");
 return;
 }
-
 }
 
 /* TOTAL */
@@ -432,8 +430,36 @@ alert("Entrega somente acima de R$ 80,00");
 return;
 }
 
-alert("Pedido enviado com sucesso!");
+/* MENSAGEM WHATSAPP */
+let msg = "🛒 *PEDIDO - SÃO RAIMUNDO*%0A%0A";
 
+msg += "👤 Cliente: " + nome + "%0A";
+msg += "📞 Telefone: " + fone + "%0A";
+msg += "🚚 Tipo: " + tipo + "%0A%0A";
+
+if(tipo=="entrega"){
+msg += "📍 Endereço:%0A";
+msg += endereco + " - " + ref + "%0A%0A";
+}
+
+msg += "💳 Pagamento: " + pagamento + "%0A%0A";
+msg += "📦 *Produtos:*%0A";
+
+cart.forEach(i=>{
+msg += "• " + i.nome + " (" + i.qtd + "x) - R$ " + (i.preco*i.qtd).toFixed(2) + "%0A";
+});
+
+msg += "%0A💰 *Total: R$ " + total.toFixed(2) + "*%0A%0A";
+msg += "🙏 Obrigado pela preferência!";
+
+/* SEU NÚMERO AQUI */
+let telefoneLoja = "5599988592997"; // TROQUE PELO SEU
+
+let link = "https://wa.me/"+telefoneLoja+"?text="+msg;
+
+window.open(link,"_blank");
+
+/* LIMPAR */
 cart=[];
 update();
 toggleCart();
