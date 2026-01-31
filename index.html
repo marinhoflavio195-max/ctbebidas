@@ -187,12 +187,6 @@ margin-top:10px;
 border-radius:5px;
 }
 
-#pix img{
-width:150px;
-margin:auto;
-display:block;
-}
-
 </style>
 </head>
 
@@ -245,25 +239,16 @@ display:block;
 <option value="cartao">Cartão</option>
 </select>
 
-<div id="pix" style="display:none">
-<button onclick="pix()">Gerar QR Pix</button>
-<div id="qrcode"></div>
-</div>
-
 <button class="checkout" onclick="finalizar()">Finalizar Pedido</button>
 
 </div>
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-
 <script>
 
-/* ===== PRODUTOS ===== */
+/* ===== PRODUTOS (NÃO ALTERADO) ===== */
 let produtos = [
-
-/* CERVEJAS */
 { id:1,nome:"BRAHMA CHOPP 350ML",preco:3.89,cat:"cerveja",img:"img/Cerveja Brahma Chopp LT 350ML.png"},
 { id:3,nome:"AMSTEL 600ML",preco:7.99,cat:"cerveja",img:"img/CERVEJA_AMSTEL_LAGER_600ML.png"},
 { id:4,nome:"ANTARCTICA 350ML",preco:4.35,cat:"cerveja",img:"img/Cerveja antarctica 350ml.png"},
@@ -280,18 +265,14 @@ let produtos = [
 { id:31,nome:"HEINEKEN LN",preco:6.95,cat:"cerveja",img:"img/CERVEJA_HEINEKEN_LN_330ML.png"},
 { id:34,nome:"CORONA 330ML",preco:8.39,cat:"cerveja",img:"img/CERVEJA_CORONA_EXTRA_330ML.png"},
 
-/* DESTILADOS */
 { id:400,nome:"Vodka 1L",preco:49.9,cat:"destilado",img:"img/destilado.png"},
 { id:401,nome:"Whisky 1L",preco:119.9,cat:"destilado",img:"img/destilado.png"},
 { id:402,nome:"Gin 750ml",preco:89.9,cat:"destilado",img:"img/destilado.png"},
 
-/* REFRI */
 { id:200,nome:"Coca 2L",preco:9.99,cat:"refri",img:"img/refri.png"},
 { id:201,nome:"Guaraná 2L",preco:8.99,cat:"refri",img:"img/refri.png"},
 
-/* AGUA */
 { id:300,nome:"Água 500ml",preco:2.5,cat:"agua",img:"img/agua.png"}
-
 ];
 
 let cart=[];
@@ -352,7 +333,7 @@ let q=parseInt(document.getElementById("q"+id).value);
 let e=cart.find(x=>x.id==id);
 
 if(e){
-e.qtd = q; // CORRIGIDO
+e.qtd = q;
 }else{
 cart.push({...p,qtd:q});
 }
@@ -394,4 +375,53 @@ document.getElementById("count").innerText=c;
 
 /* ===== CART ===== */
 function toggleCart(){
-document.getElementById("cart").classList.toggle
+document.getElementById("cart").classList.toggle("active");
+}
+
+/* ===== FILTRO ===== */
+function filter(cat,btn){
+
+categoria=cat;
+
+document.querySelectorAll(".categories button")
+.forEach(b=>b.classList.remove("active"));
+
+btn.classList.add("active");
+
+render();
+
+}
+
+/* ===== FINALIZAR ===== */
+function finalizar(){
+
+if(cart.length==0){
+alert("Carrinho vazio!");
+return;
+}
+
+let total=cart.reduce((a,b)=>a+b.preco*b.qtd,0);
+
+let tipo=document.getElementById("tipo").value;
+
+/* REGRA ENTREGA 80 */
+if(tipo=="entrega" && total<80){
+alert("Entrega somente para pedidos acima de R$ 80,00");
+return;
+}
+
+alert("Pedido enviado com sucesso!");
+
+cart=[];
+update();
+toggleCart();
+
+}
+
+/* START */
+render();
+
+</script>
+
+</body>
+</html>
