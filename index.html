@@ -384,8 +384,6 @@ div.innerHTML += `
 
 document.getElementById("total").innerText = "Total: R$ " + total.toFixed(2);
 document.getElementById("count").innerText = c;
-
-}
 function update(){
 function alterarQtd(id, valor){
 
@@ -399,6 +397,8 @@ item.qtd += valor;
 if(item.qtd <= 0){
 cart = cart.filter(i => i.id != id);
 }
+}
+
 /* ===== CART ===== */
 function toggleCart(){
 document.getElementById("cart").classList.toggle("active");
