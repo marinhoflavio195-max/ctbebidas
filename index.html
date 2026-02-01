@@ -478,21 +478,274 @@ let telefoneLoja = "5599981050024"; // TROQUE PELO SEU
 
 let link = "https://wa.me/"+telefoneLoja+"?text="+msg;
 
+<script>
+
+/* ===== PRODUTOS ===== */
+let produtos = [
+
+{ id:1,nome:"BRAHMA CHOPP 350ML",preco:3.89,cat:"cerveja",img:"img/Cerveja Brahma Chopp LT 350ML.png"},
+{ id:3,nome:"AMSTEL 600ML",preco:7.99,cat:"cerveja",img:"img/CERVEJA_AMSTEL_LAGER_600ML.png"},
+{ id:4,nome:"ANTARCTICA 350ML",preco:4.35,cat:"cerveja",img:"img/Cerveja antarctica 350ml.png"},
+{ id:5,nome:"KAISER 473ML",preco:3.95,cat:"cerveja",img:"img/cerveja kaiser lt 473ml.png"},
+{ id:6,nome:"SKOL 269ML",preco:3.25,cat:"cerveja",img:"img/CERVEJA SKOL LT 269ML.png"},
+{ id:8,nome:"BUDWEISER 350ML",preco:4.75,cat:"cerveja",img:"img/CERVEJA BUDWEISER LT 350ML.png"},
+{ id:12,nome:"BRAHMA 269ML",preco:2.79,cat:"cerveja",img:"img/CERVEJA_BRAHMA_CHOPP_269ML.png"},
+{ id:13,nome:"EISENBAHN 355ML",preco:5.69,cat:"cerveja",img:"img/CERVEJA_EISENBAHN_PURO_MALTE_355ML.png"},
+{ id:17,nome:"BUD LN 330ML",preco:6.49,cat:"cerveja",img:"img/CERVEJA_BUDWEISER_LN_330ML.png"},
+{ id:19,nome:"PETRA 350ML",preco:3.10,cat:"cerveja",img:"img/CERVEJA_PETRA_PURO_MALTE_350ML.png"},
+{ id:24,nome:"HEINEKEN 600ML",preco:11.69,cat:"cerveja",img:"img/CERVEJA_HEINEKEN_600ML.png"},
+{ id:28,nome:"SKOL 350ML",preco:3.75,cat:"cerveja",img:"img/CERVEJA_SKOL_PILSEN_350ML.png"},
+{ id:30,nome:"BRAHMA DUPLO 350ML",preco:3.99,cat:"cerveja",img:"img/CERVEJA_BRAHMA_DUPLO_MALTE_350ML.png"},
+{ id:31,nome:"HEINEKEN LN",preco:6.95,cat:"cerveja",img:"img/CERVEJA_HEINEKEN_LN_330ML.png"},
+{ id:34,nome:"CORONA 330ML",preco:8.39,cat:"cerveja",img:"img/CERVEJA_CORONA_EXTRA_330ML.png"},
+
+{ id:400,nome:"Vodka 1L",preco:49.9,cat:"destilado",img:"img/destilado.png"},
+{ id:401,nome:"Whisky 1L",preco:119.9,cat:"destilado",img:"img/destilado.png"},
+{ id:402,nome:"Gin 750ml",preco:89.9,cat:"destilado",img:"img/destilado.png"},
+
+{ id:200,nome:"Coca 2L",preco:9.99,cat:"refri",img:"img/refri.png"},
+{ id:201,nome:"Guaraná 2L",preco:8.99,cat:"refri",img:"img/refri.png"},
+
+{ id:300,nome:"Água 500ml",preco:2.5,cat:"agua",img:"img/agua.png"}
+
+];
+
+let cart = [];
+let categoria = "cerveja";
+
+
+/* ===== RENDER ===== */
+function render(){
+
+let div = document.getElementById("products");
+div.innerHTML = "";
+
+produtos
+.filter(p => p.cat == categoria)
+.forEach(p => {
+
+div.innerHTML += `
+
+<div class="product">
+
+<img src="${p.img}">
+
+<h4>${p.nome}</h4>
+
+<p>R$ ${p.preco.toFixed(2)}</p>
+
+<div class="qty">
+<button onclick="qtd(${p.id},-1)">-</button>
+<input id="q${p.id}" value="1">
+<button onclick="qtd(${p.id},1)">+</button>
+</div>
+
+<button onclick="add(${p.id})">Adicionar</button>
+
+</div>
+
+`;
+
+});
+
+}
+
+
+/* ===== QTD PRODUTO ===== */
+function qtd(id,d){
+
+let i = document.getElementById("q"+id);
+let v = parseInt(i.value) + d;
+
+if(v < 1) v = 1;
+
+i.value = v;
+
+}
+
+
+/* ===== ADICIONAR ===== */
+function add(id){
+
+let p = produtos.find(x => x.id == id);
+let q = parseInt(document.getElementById("q"+id).value);
+
+let e = cart.find(x => x.id == id);
+
+if(e){
+e.qtd = q;
+}else{
+cart.push({...p, qtd:q});
+}
+
+update();
+
+}
+
+
+/* ===== UPDATE CARRINHO ===== */
+function update(){
+
+let div = document.getElementById("items");
+div.innerHTML = "";
+
+let total = 0;
+let c = 0;
+
+cart.forEach(i => {
+
+total += i.preco * i.qtd;
+c += i.qtd;
+
+div.innerHTML += `
+
+<div class="cart-item">
+
+<div>
+<b>${i.nome}</b><br>
+
+<button onclick="alterarQtd(${i.id},-1)">➖</button>
+
+<span style="margin:0 8px">${i.qtd}</span>
+
+<button onclick="alterarQtd(${i.id},1)">➕</button>
+
+</div>
+
+<span>R$ ${(i.preco*i.qtd).toFixed(2)}</span>
+
+</div>
+
+`;
+
+});
+
+document.getElementById("total").innerText =
+"Total: R$ " + total.toFixed(2);
+
+document.getElementById("count").innerText = c;
+
+}
+
+
+/* ===== ALTERAR QTD NO CARRINHO ===== */
+function alterarQtd(id, valor){
+
+let item = cart.find(i => i.id == id);
+
+if(!item) return;
+
+item.qtd += valor;
+
+if(item.qtd <= 0){
+cart = cart.filter(i => i.id != id);
+}
+
+update();
+
+}
+
+
+/* ===== CART ===== */
+function toggleCart(){
+document.getElementById("cart").classList.toggle("active");
+}
+
+
+/* ===== FILTRO ===== */
+function filter(cat,btn){
+
+categoria = cat;
+
+document.querySelectorAll(".categories button")
+.forEach(b => b.classList.remove("active"));
+
+btn.classList.add("active");
+
+render();
+
+}
+
+
+/* ===== FINALIZAR ===== */
+function finalizar(){
+
+if(cart.length == 0){
+alert("Carrinho vazio!");
+return;
+}
+
+let nome = document.getElementById("nome").value.trim();
+let fone = document.getElementById("fone").value.trim();
+let endereco = document.getElementById("endereco").value.trim();
+let ref = document.getElementById("ref").value.trim();
+let tipo = document.getElementById("tipo").value;
+let pagamento = document.getElementById("pagamento").value;
+
+
+if(nome=="" || fone==""){
+alert("Preencha Nome e Telefone!");
+return;
+}
+
+if(tipo=="entrega"){
+if(endereco=="" || ref==""){
+alert("Preencha Endereço e Referência!");
+return;
+}
+}
+
+
+let total = cart.reduce((a,b)=>a+b.preco*b.qtd,0);
+
+
+if(tipo=="entrega" && total < 80){
+alert("Entrega somente acima de R$ 80,00");
+return;
+}
+
+
+/* ===== WHATS ===== */
+let msg = "🛒 *PEDIDO - SÃO RAIMUNDO*%0A%0A";
+
+msg += "👤 Cliente: " + nome + "%0A";
+msg += "📞 Telefone: " + fone + "%0A";
+msg += "🚚 Tipo: " + tipo + "%0A%0A";
+
+if(tipo=="entrega"){
+msg += "📍 Endereço:%0A";
+msg += endereco + " - " + ref + "%0A%0A";
+}
+
+msg += "💳 Pagamento: " + pagamento + "%0A%0A";
+msg += "📦 *Produtos:*%0A";
+
+cart.forEach(i=>{
+msg += "• " + i.nome + " (" + i.qtd + "x) - R$ " +
+(i.preco*i.qtd).toFixed(2) + "%0A";
+});
+
+msg += "%0A💰 *Total: R$ " + total.toFixed(2) + "*%0A%0A";
+msg += "🙏 Obrigado pela preferência!";
+
+
+let telefoneLoja = "5599981050024";
+
+let link = "https://wa.me/"+telefoneLoja+"?text="+msg;
+
 window.open(link,"_blank");
 
-/* LIMPAR */
-cart=[];
+
+cart = [];
 update();
 toggleCart();
 
 }
 
-/* START */
+
+/* ===== START ===== */
 window.onload = function(){
 render();
 }
 
 </script>
-
-</body>
-</html>
