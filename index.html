@@ -346,31 +346,58 @@ update();
 }
 
 function update(){
+function alterarQtd(id, valor){
 
-let div=document.getElementById("items");
-div.innerHTML="";
+let item = cart.find(i => i.id == id);
 
-let total=0;
-let c=0;
+if(!item) return;
+
+item.qtd += valor;
+
+/* Se chegar em zero, remove */
+if(item.qtd <= 0){
+cart = cart.filter(i => i.id != id);
+}
+
+update();
+
+}
+let div = document.getElementById("items");
+div.innerHTML = "";
+
+let total = 0;
+let c = 0;
 
 cart.forEach(i=>{
 
-total+=i.preco*i.qtd;
-c+=i.qtd;
+total += i.preco * i.qtd;
+c += i.qtd;
 
-div.innerHTML+=`
+div.innerHTML += `
 
 <div class="cart-item">
-${i.nome} (${i.qtd})
+
+<div>
+<b>${i.nome}</b><br>
+
+<button onclick="alterarQtd(${i.id},-1)">➖</button>
+
+<span style="margin:0 8px">${i.qtd}</span>
+
+<button onclick="alterarQtd(${i.id},1)">➕</button>
+
+</div>
+
 <span>R$ ${(i.preco*i.qtd).toFixed(2)}</span>
+
 </div>
 
 `;
 
 });
 
-document.getElementById("total").innerText="Total: R$ "+total.toFixed(2);
-document.getElementById("count").innerText=c;
+document.getElementById("total").innerText = "Total: R$ " + total.toFixed(2);
+document.getElementById("count").innerText = c;
 
 }
 
