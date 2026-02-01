@@ -345,20 +345,6 @@ update();
 
 }
 
-function update(){
-function alterarQtd(id, valor){
-
-let item = cart.find(i => i.id == id);
-
-if(!item) return;
-
-item.qtd += valor;
-
-/* Se chegar em zero, remove */
-if(item.qtd <= 0){
-cart = cart.filter(i => i.id != id);
-}
-
 update();
 
 }
@@ -400,7 +386,19 @@ document.getElementById("total").innerText = "Total: R$ " + total.toFixed(2);
 document.getElementById("count").innerText = c;
 
 }
+function update(){
+function alterarQtd(id, valor){
 
+let item = cart.find(i => i.id == id);
+
+if(!item) return;
+
+item.qtd += valor;
+
+/* Se chegar em zero, remove */
+if(item.qtd <= 0){
+cart = cart.filter(i => i.id != id);
+}
 /* ===== CART ===== */
 function toggleCart(){
 document.getElementById("cart").classList.toggle("active");
