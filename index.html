@@ -441,6 +441,92 @@ render();
 }
 
 </script>
+<!-- COLE ESTE CÓDIGO NO LUGAR DO SEU -->
 
+<script>
+
+/* ===== FINALIZAR ===== */
+function finalizar(){
+
+if(cart.length == 0){
+alert("Carrinho vazio!");
+return;
+}
+
+let nome = document.getElementById("nome").value.trim();
+let fone = document.getElementById("fone").value.trim();
+let endereco = document.getElementById("endereco").value.trim();
+let ref = document.getElementById("ref").value.trim();
+let tipo = document.getElementById("tipo").value;
+let pagamento = document.getElementById("pagamento").value;
+
+/* Validações */
+if(nome == "" || fone == ""){
+alert("Informe Nome e Telefone");
+return;
+}
+
+/* Total */
+let total = 0;
+cart.forEach(i=>{
+total += i.preco * i.qtd;
+});
+
+/* Regra Entrega */
+if(tipo == "entrega"){
+
+if(total < 80){
+alert("Entrega somente acima de R$ 80,00");
+return;
+}
+
+if(endereco == ""){
+alert("Informe o endereço");
+return;
+}
+
+}
+
+/* Monta Itens */
+let itens = "";
+cart.forEach(i=>{
+itens += `${i.nome} x${i.qtd} - R$ ${(i.preco*i.qtd).toFixed(2)}\n`;
+});
+
+/* Tipo texto */
+let tipoTxt = tipo == "entrega" ? "Entrega" : "Retirada";
+
+/* Pagamento */
+let pagTxt = pagamento.toUpperCase();
+
+/* Mensagem */
+let msg = 
+`📦 NOVO PEDIDO – SR DELIVERY\n\n`+
+`👤 Cliente: ${nome}\n`+
+`📞 Telefone: ${fone}\n\n`;
+
+if(tipo=="entrega"){
+msg += `📍 Endereço: ${endereco}\n`;
+if(ref!="") msg += `📌 Ref: ${ref}\n`;
+msg += `\n`;
+}
+
+msg += 
+`🛒 Itens:\n\n${itens}\n`+
+`💰 Total: R$ ${total.toFixed(2)}\n`+
+`🚚 Tipo: ${tipoTxt}\n`+
+`💳 Pagamento: ${pagTxt}`;
+
+/* WhatsApp */
+let numero = "5599999999999"; // COLOQUE SEU NÚMERO AQUI
+
+let url = 
+`https://wa.me/${numero}?text=${encodeURIComponent(msg)}`;
+
+window.open(url,"_blank");
+
+}
+
+</script>
 </body>
 </html>
