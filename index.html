@@ -19,13 +19,11 @@ padding-top:200px;
 header{
 background:url("img/logoGPT.png") center/100% 100% no-repeat;
 height:190px;
-
 position:fixed;
 top:0;
 left:0;
 width:100%;
 z-index:1000;
-
 display:flex;
 justify-content:flex-end;
 align-items:center;
@@ -38,6 +36,7 @@ font-size:26px;
 color:white;
 cursor:pointer;
 position:relative;
+text-align:center;
 }
 
 .cart-count{
@@ -49,6 +48,12 @@ font-size:12px;
 position:absolute;
 top:-6px;
 right:-8px;
+}
+
+#cartTotal{
+font-size:12px;
+margin-top:2px;
+font-weight:bold;
 }
 
 /* ===== CATEGORIAS ===== */
@@ -156,11 +161,16 @@ justify-content:space-between;
 }
 
 .cart-item{
-padding:8px;
+padding:6px;
 border-bottom:1px solid #ddd;
-font-size:13px;
+font-size:12px;
 display:flex;
 justify-content:space-between;
+}
+
+.cart-item button{
+font-size:11px;
+padding:2px 5px;
 }
 
 .total{
@@ -194,7 +204,9 @@ border-radius:5px;
 
 <header>
 <div class="cart-icon" onclick="toggleCart()">
-🛒 <span id="count" class="cart-count">0</span>
+🛒 
+<span id="count" class="cart-count">0</span>
+<div id="cartTotal">R$ 0,00</div>
 </div>
 </header>
 
@@ -248,7 +260,6 @@ border-radius:5px;
 
 /* ===== PRODUTOS ===== */
 let produtos = [
-
 { id:1,nome:"BRAHMA CHOPP 350ML",preco:3.89,cat:"cerveja",img:"img/Cerveja Brahma Chopp LT 350ML.png"},
 { id:3,nome:"AMSTEL 600ML",preco:7.99,cat:"cerveja",img:"img/CERVEJA_AMSTEL_LAGER_600ML.png"},
 { id:4,nome:"ANTARCTICA 350ML",preco:4.35,cat:"cerveja",img:"img/Cerveja antarctica 350ml.png"},
@@ -274,12 +285,10 @@ let produtos = [
 { id:201,nome:"Guaraná 2L",preco:8.99,cat:"refri",img:"img/refri.png"},
 
 { id:300,nome:"Água 500ml",preco:2.5,cat:"agua",img:"img/agua.png"}
-
 ];
 
 let cart = [];
 let categoria = "cerveja";
-
 
 /* ===== RENDER ===== */
 function render(){
@@ -296,9 +305,7 @@ div.innerHTML += `
 <div class="product">
 
 <img src="${p.img}">
-
 <h4>${p.nome}</h4>
-
 <p>R$ ${p.preco.toFixed(2)}</p>
 
 <div class="qty">
@@ -317,25 +324,24 @@ div.innerHTML += `
 
 }
 
-
-/* ===== QTD PRODUTO ===== */
+/* ===== QTD ===== */
 function qtd(id,d){
 
 let i = document.getElementById("q"+id);
 let v = parseInt(i.value) + d;
 
-if(v < 1) v = 0;
+if(v < 0) v = 0;
 
 i.value = v;
-
 }
 
-
-/* ===== ADICIONAR ===== */
+/* ===== ADD ===== */
 function add(id){
 
 let p = produtos.find(x => x.id == id);
 let q = parseInt(document.getElementById("q"+id).value);
+
+if(q == 0) return;
 
 let e = cart.find(x => x.id == id);
 
@@ -346,11 +352,9 @@ cart.push({...p, qtd:q});
 }
 
 update();
-
 }
 
-
-/* ===== UPDATE CARRINHO ===== */
+/* ===== UPDATE ===== */
 function update(){
 
 let div = document.getElementById("items");
@@ -392,10 +396,12 @@ document.getElementById("total").innerText =
 
 document.getElementById("count").innerText = c;
 
+document.getElementById("cartTotal").innerText =
+"R$ " + total.toFixed(2);
+
 }
 
-
-/* ===== ALTERAR QTD NO CARRINHO ===== */
+/* ===== ALTERAR ===== */
 function alterarQtd(id, valor){
 
 let item = cart.find(i => i.id == id);
@@ -409,15 +415,12 @@ cart = cart.filter(i => i.id != id);
 }
 
 update();
-
 }
-
 
 /* ===== CART ===== */
 function toggleCart(){
 document.getElementById("cart").classList.toggle("active");
 }
-
 
 /* ===== FILTRO ===== */
 function filter(cat,btn){
@@ -430,85 +433,7 @@ document.querySelectorAll(".categories button")
 btn.classList.add("active");
 
 render();
-
 }
-
-
-/* ===== FINALIZAR ===== */
-function finalizar(){
-
-if(cart.length == 0){
-alert("Carrinho vazio!");
-return;
-}
-
-let nome = document.getElementById("nome").value.trim();
-let fone = document.getElementById("fone").value.trim();
-let endereco = document.getElementById("endereco").value.trim();
-let ref = document.getElementById("ref").value.trim();
-let tipo = document.getElementById("tipo").value;
-let pagamento = document.getElementById("pagamento").value;
-
-
-if(nome=="" || fone==""){
-alert("Preencha Nome e Telefone!");
-return;
-}
-
-if(tipo=="entrega"){
-if(endereco=="" || ref==""){
-alert("Preencha Endereço e Referência!");
-return;
-}
-}
-
-
-let total = cart.reduce((a,b)=>a+b.preco*b.qtd,0);
-
-
-if(tipo=="entrega" && total < 80){
-alert("Entrega somente acima de R$ 80,00");
-return;
-}
-
-
-/* ===== WHATS ===== */
-let msg = "🛒 *PEDIDO - SÃO RAIMUNDO*%0A%0A";
-
-msg += "👤 Cliente: " + nome + "%0A";
-msg += "📞 Telefone: " + fone + "%0A";
-msg += "🚚 Tipo: " + tipo + "%0A%0A";
-
-if(tipo=="entrega"){
-msg += "📍 Endereço:%0A";
-msg += endereco + " - " + ref + "%0A%0A";
-}
-
-msg += "💳 Pagamento: " + pagamento + "%0A%0A";
-msg += "📦 *Produtos:*%0A";
-
-cart.forEach(i=>{
-msg += "• " + i.nome + " (" + i.qtd + "x) - R$ " +
-(i.preco*i.qtd).toFixed(2) + "%0A";
-});
-
-msg += "%0A💰 *Total: R$ " + total.toFixed(2) + "*%0A%0A";
-msg += "🙏 Obrigado pela preferência!";
-
-
-let telefoneLoja = "5599981050024";
-
-let link = "https://wa.me/"+telefoneLoja+"?text="+msg;
-
-window.open(link,"_blank");
-
-
-cart = [];
-update();
-toggleCart();
-
-}
-
 
 /* ===== START ===== */
 window.onload = function(){
@@ -516,3 +441,6 @@ render();
 }
 
 </script>
+
+</body>
+</html>
