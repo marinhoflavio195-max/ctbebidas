@@ -7,7 +7,6 @@
 
 <style>
 
-/* ===== GERAL ===== */
 body{
 margin:0;
 font-family:Arial, sans-serif;
@@ -15,7 +14,7 @@ background:#f5f5f5;
 padding-top:200px;
 }
 
-/* ===== TOPO ===== */
+/* TOPO */
 header{
 background:url("img/logoGPT.png") center/100% 100% no-repeat;
 height:190px;
@@ -56,7 +55,7 @@ margin-top:2px;
 font-weight:bold;
 }
 
-/* ===== CATEGORIAS ===== */
+/* CATEGORIAS */
 .categories{
 display:flex;
 justify-content:center;
@@ -82,7 +81,7 @@ background:#c40000;
 color:#fff;
 }
 
-/* ===== PRODUTOS ===== */
+/* PRODUTOS */
 .products{
 display:grid;
 grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
@@ -134,7 +133,7 @@ padding:6px;
 border-radius:5px;
 }
 
-/* ===== CARRINHO ===== */
+/* CARRINHO */
 #cart{
 position:fixed;
 top:0;
@@ -173,14 +172,14 @@ padding:10px;
 font-weight:bold;
 }
 
-/* ===== FORM ===== */
+/* FORM */
 .form input, .form select{
 width:100%;
 padding:7px;
 margin:5px 0;
 }
 
-/* ===== BOTÃO ===== */
+/* BOTÃO */
 .checkout{
 background:#c40000;
 color:#fff;
@@ -232,6 +231,7 @@ border-radius:5px;
 <input id="nome" placeholder="Nome">
 <input id="fone" placeholder="Telefone">
 <input id="endereco" placeholder="Endereço">
+<input id="referencia" placeholder="Ponto de referência">
 
 <select id="tipo">
 <option value="entrega">Entrega</option>
@@ -251,7 +251,7 @@ border-radius:5px;
 
 <script>
 
-/* ===== PRODUTOS ===== */
+/* PRODUTOS */
 let produtos = [
 
 /* CERVEJAS */
@@ -276,7 +276,7 @@ let produtos = [
 { id:200,nome:"Coca 2L",preco:9.99,cat:"refri",img:"img/refri.png"},
 { id:201,nome:"Guaraná 2L",preco:8.99,cat:"refri",img:"img/refri.png"},
 
-/* ÁGUA */
+/* AGUA */
 { id:300,nome:"Água 500ml",preco:2.50,cat:"agua",img:"img/agua.png"},
 
 /* DESTILADOS */
@@ -287,13 +287,12 @@ let produtos = [
 { id:404,nome:"GIN ROCKS STRAWBERRY",preco:29.99,cat:"destilado",img:"img/29,99GIN ROCKS STRAWBERRY 1L.png"},
 { id:405,nome:"OLD PARR 12 ANOS",preco:139.99,cat:"destilado",img:"img/139,99WHISKY OLD PARR 12 ANOS 1LT.png"},
 { id:416,nome:"CARVÃO VEGETAL 3KG",preco:12.60,cat:"destilado",img:"img/CARVÃO VEGETAL.png"}
-
 ];
 
 let cart=[];
 let categoria="cerveja";
 
-/* ===== RENDER ===== */
+/* RENDER */
 function render(){
 
 let div=document.getElementById("products");
@@ -397,6 +396,9 @@ return;
 
 let nome=document.getElementById("nome").value.trim();
 let fone=document.getElementById("fone").value.trim();
+let endereco=document.getElementById("endereco").value.trim();
+let ref=document.getElementById("referencia").value.trim();
+let tipo=document.getElementById("tipo").value;
 let pagamento=document.getElementById("pagamento").value;
 
 if(nome==""||fone==""){
@@ -420,19 +422,28 @@ alert("Pix copiado!");
 }
 
 /* WHATSAPP */
+/* WHATSAPP */
+
 let itens="";
 
 cart.forEach(i=>{
-itens+=`${i.nome} x${i.qtd}\n`;
+itens+=`${i.nome} x${i.qtd} - R$ ${(i.preco*i.qtd).toFixed(2)}\n\n`;
 });
 
-let msg=
-`Pedido SR Delivery\n\n`+
-`Cliente: ${nome}\n`+
-`Tel: ${fone}\n\n`+
-`${itens}\n`+
-`Total: R$ ${total.toFixed(2)}\n`+
-`Pagamento: ${pagamento}`;
+let msg =
+`📦 NOVO PEDIDO – SR DELIVERY\n\n`+
+`👤 Cliente: ${nome}\n`+
+`📞 Telefone: ${fone}\n\n`+
+
+`📍 Endereço: ${endereco}\n`+
+`📌 Ref: ${ref}\n\n`+
+
+`🛒 Itens:\n\n`+
+`${itens}`+
+
+`💰 Total: R$ ${total.toFixed(2)}\n`+
+`🚚 Tipo: ${tipo}\n`+
+`💳 Pagamento: ${pagamento}`;
 
 let numero="5599988592997";
 
