@@ -251,7 +251,7 @@ border-radius:5px;
 <option value="cartao">Cartão</option>
 </select>
 
-<button class="checkout" onclick="()">Finalizar Pedido</button>
+<button class="checkout" onclick="finalizar()">Finalizar Pedido</button>
 
 </div>
 </div>
@@ -276,24 +276,6 @@ let produtos = [
 { id:31,nome:"HEINEKEN LN",preco:6.95,cat:"cerveja",img:"img/CERVEJA_HEINEKEN_LN_330ML.png"},
 { id:34,nome:"CORONA 330ML",preco:8.39,cat:"cerveja",img:"img/CERVEJA_CORONA_EXTRA_330ML.png"},
 { id:35,nome:"C/12 BRAHMA DUPLO 350ML",preco:45.49,cat:"cerveja",img:"img/C12_CERVEJA_BRAHMA_DUPLO_MALTE_350ML.png"},
-
-{ id:400,nome:"WHISKY JACK DANIELS E COCA COLA LT 350ML",preco:11.25,cat:"destilado",img:"img/11,25WHISKY JACK DANIELS E COCA COLA LT 350ML.png"},
-{ id:401,nome:"WHISKY JOHNNIE WALKER RED LABEL 1LT",preco:102.50,cat:"destilado",img:"img/102,50WHISKY JOHNNIE WALKER RED LABEL 1LT.png"},
-{ id:402,nome:"GIN TANQUERAY 750ML",preco:111.75,cat:"destilado",img:"img/111,75GIN TANQUERAY 750ML.png"},
-{ id:403,nome:"GIN ROCKS 1L",preco:29.99,cat:"destilado",img:"img/29,99GIN ROCKS 1L.png"},
-{ id:404,nome:"GIN ROCKS STRAWBERRY 1L",preco:29.99,cat:"destilado",img:"img/29,99GIN ROCKS STRAWBERRY 1L.png"},
-{ id:405,nome:"WHISKY OLD PARR 12 ANOS 1LT",preco:139.99,cat:"destilado",img:"img/139,99WHISKY OLD PARR 12 ANOS 1LT.png"},
-{ id:406,nome:"WHISKY JACK DANIEL S HONEY 1L",preco:150.99,cat:"destilado",img:"img/150,99WHISKY JACK DANIEL S HONEY 1L.png"},
-{ id:407,nome:"WHISKY JACK DANIELS 1L",preco:150.99,cat:"destilado",img:"img/150,99WHISKY JACK DANIELS 1L.png"},
-{ id:408,nome:"WHISKY JACK DANIELS APPLE 1L",preco:150.99,cat:"destilado",img:"img/150,99WHISKY JACK DANIELS APPLE 1L.png"},
-{ id:409,nome:"WHISKY JACK DANIELS FIRE 1L",preco:150.99,cat:"destilado",img:"img/150,99WHISKY JACK DANIELS FIRE 1L.png"},
-{ id:410,nome:"WHISKY DEWARS 15 ANOS 750ML",preco:250.00,cat:"destilado",img:"img/259,00WHISKY DEWARS 15 ANOS 750ML.png"},
-{ id:411,nome:"WHISKY PASSPORT SCOTCH 1L",preco:45.50,cat:"destilado",img:"img/45.50WHISKY PASSPORT SCOTCH 1L.png"},
-{ id:412,nome:"WHISKY BLACK WHITE NACIONAL 1L",preco:49.20,cat:"destilado",img:"img/49.20WHISKY BLACK WHITE NACIONAL 1L.png"},
-{ id:413,nome:"WHISKY BALLANTINE'S FINEST ES 1LT",preco:93.50,cat:"destilado",img:"img/93,50WHISKY BALLANTINE'S FINEST ES 1LT.png"},
-{ id:414,nome:"WHISKY WHITE HORSE 1LT",preco:83.60,cat:"destilado",img:"img/83,60WHISKY WHITE HORSE 1LT.png"},
-{ id:415,nome:"APERITIVO CAMPARI MILANO 998ML",preco:67.49,cat:"destilado",img:"img/67,49APERITIVO CAMPARI MILANO  998ML.png"},
-{ id:415,nome:"CARVAO VEGETAL PACOTE 3KG",preco:12.60,cat:"destilado",img:"img/CARVÃO VEGETAL.png"},
 
 { id:200,nome:"Coca 2L",preco:9.99,cat:"refri",img:"img/refri.png"},
 { id:201,nome:"Guaraná 2L",preco:8.99,cat:"refri",img:"img/refri.png"},
@@ -449,21 +431,6 @@ btn.classList.add("active");
 render();
 }
 
-/* ===== START ===== */
-window.onload = function(){
-render();
-}
-
-</script>
-<!-- COLE ESTE CÓDIGO NO LUGAR DO SEU -->
-
-<script>
-
-/* ===== FINALIZAR ===== */
-<script>
-
-let mensagemFinal = "";
-
 /* ===== FINALIZAR ===== */
 function finalizar(){
 
@@ -484,11 +451,13 @@ alert("Informe Nome e Telefone");
 return;
 }
 
+/* Total */
 let total = 0;
 cart.forEach(i=>{
 total += i.preco * i.qtd;
 });
 
+/* Regra Entrega */
 if(tipo == "entrega"){
 
 if(total < 80){
@@ -500,16 +469,28 @@ if(endereco == ""){
 alert("Informe o endereço");
 return;
 }
+
 }
 
+/* PIX */
+if(pagamento === "pix"){
+
+alert(
+"💳 PAGAMENTO VIA PIX\n\n" +
+"Chave Pix:\n" +
+"99988592997\n\n" +
+"Após pagar, clique em OK para enviar o pedido."
+);
+
+}
+
+/* Monta Itens */
 let itens = "";
 cart.forEach(i=>{
 itens += `${i.nome} x${i.qtd} - R$ ${(i.preco*i.qtd).toFixed(2)}\n`;
 });
 
-let tipoTxt = tipo == "entrega" ? "Entrega" : "Retirada";
-let pagTxt = pagamento.toUpperCase();
-
+/* Mensagem */
 let msg = 
 `📦 NOVO PEDIDO – SR DELIVERY\n\n`+
 `👤 Cliente: ${nome}\n`+
@@ -524,38 +505,11 @@ msg += `\n`;
 msg += 
 `🛒 Itens:\n\n${itens}\n`+
 `💰 Total: R$ ${total.toFixed(2)}\n`+
-`🚚 Tipo: ${tipoTxt}\n`+
-`💳 Pagamento: ${pagTxt}`;
+`🚚 Tipo: ${tipo}\n`+
+`💳 Pagamento: ${pagamento.toUpperCase()}`;
 
-mensagemFinal = msg;
-
-/* Se for Pix → abre modal */
-if(pagamento == "pix"){
-document.getElementById("pixModal").style.display="flex";
-}else{
-enviarWhats(msg);
-}
-
-}
-
-/* ===== CONFIRMAR PIX ===== */
-function confirmarPix(){
-
-document.getElementById("pixModal").style.display="none";
-
-enviarWhats(mensagemFinal);
-
-}
-
-/* ===== FECHAR PIX ===== */
-function fecharPix(){
-document.getElementById("pixModal").style.display="none";
-}
-
-/* ===== ENVIAR WHATS ===== */
-function enviarWhats(msg){
-
-let numero = "5599988592997"; // SEU NÚMERO
+/* WhatsApp */
+let numero = "5599988592997";
 
 let url = 
 `https://wa.me/${numero}?text=${encodeURIComponent(msg)}`;
@@ -564,64 +518,12 @@ window.open(url,"_blank");
 
 }
 
-</script>
+/* ===== START ===== */
+window.onload = function(){
+render();
+}
 
 </script>
-<!-- MODAL PIX -->
-<div id="pixModal" style="
-display:none;
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-background:rgba(0,0,0,.6);
-z-index:9999;
-align-items:center;
-justify-content:center;
-">
 
-<div style="
-background:#fff;
-padding:20px;
-border-radius:10px;
-width:90%;
-max-width:320px;
-text-align:center;
-">
-
-<h3>Pagamento via Pix</h3>
-
-<img src="99988592997" style="width:200px;margin:10px">
-
-<p><b>Chave Pix:</b></p>
-<p>5599988592997</p>
-
-<button onclick="confirmarPix()" 
-style="
-background:#0a7cff;
-color:#fff;
-border:none;
-padding:10px 15px;
-border-radius:5px;
-width:100%;
-font-size:16px;
-">
-Já paguei
-</button>
-
-<br><br>
-
-<button onclick="fecharPix()"
-style="
-background:#ccc;
-border:none;
-padding:8px;
-width:100%;
-border-radius:5px;
-">
-Cancelar
-</button>
-
-</div>
-</div>
 </body>
 </html>
