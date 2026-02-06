@@ -493,13 +493,21 @@ return;
 /* PIX */
 if(pagamento === "pix"){
 
-alert(
+/* PIX */
+if(pagamento === "pix"){
+
+let chave = "99988592997";
+
+let copiar = prompt(
 "💳 PAGAMENTO VIA PIX\n\n" +
-"Chave Pix:\n" +
-"99988592997\n\n" +
-"Após pagar, clique em OK para enviar o pedido."
+"Copie a chave abaixo:\n\n" +
+chave +
+"\n\nCole no app do banco para pagar.",
+chave
 );
 
+if(copiar === null){
+return; // cancelou
 }
 
 /* Monta Itens */
