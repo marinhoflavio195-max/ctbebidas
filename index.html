@@ -251,7 +251,7 @@ border-radius:5px;
 <option value="cartao">Cartão</option>
 </select>
 
-<button class="checkout" onclick="finalizar()">Finalizar Pedido</button>
+<button class="checkout" onclick="()">Finalizar Pedido</button>
 
 </div>
 </div>
@@ -460,6 +460,11 @@ render();
 <script>
 
 /* ===== FINALIZAR ===== */
+<script>
+
+let mensagemFinal = "";
+
+/* ===== FINALIZAR ===== */
 function finalizar(){
 
 if(cart.length == 0){
@@ -474,19 +479,16 @@ let ref = document.getElementById("ref").value.trim();
 let tipo = document.getElementById("tipo").value;
 let pagamento = document.getElementById("pagamento").value;
 
-/* Validações */
 if(nome == "" || fone == ""){
 alert("Informe Nome e Telefone");
 return;
 }
 
-/* Total */
 let total = 0;
 cart.forEach(i=>{
 total += i.preco * i.qtd;
 });
 
-/* Regra Entrega */
 if(tipo == "entrega"){
 
 if(total < 80){
@@ -498,22 +500,16 @@ if(endereco == ""){
 alert("Informe o endereço");
 return;
 }
-
 }
 
-/* Monta Itens */
 let itens = "";
 cart.forEach(i=>{
 itens += `${i.nome} x${i.qtd} - R$ ${(i.preco*i.qtd).toFixed(2)}\n`;
 });
 
-/* Tipo texto */
 let tipoTxt = tipo == "entrega" ? "Entrega" : "Retirada";
-
-/* Pagamento */
 let pagTxt = pagamento.toUpperCase();
 
-/* Mensagem */
 let msg = 
 `📦 NOVO PEDIDO – SR DELIVERY\n\n`+
 `👤 Cliente: ${nome}\n`+
@@ -531,8 +527,35 @@ msg +=
 `🚚 Tipo: ${tipoTxt}\n`+
 `💳 Pagamento: ${pagTxt}`;
 
-/* WhatsApp */
-let numero = "5599988592997"; // COLOQUE SEU NÚMERO AQUI
+mensagemFinal = msg;
+
+/* Se for Pix → abre modal */
+if(pagamento == "pix"){
+document.getElementById("pixModal").style.display="flex";
+}else{
+enviarWhats(msg);
+}
+
+}
+
+/* ===== CONFIRMAR PIX ===== */
+function confirmarPix(){
+
+document.getElementById("pixModal").style.display="none";
+
+enviarWhats(mensagemFinal);
+
+}
+
+/* ===== FECHAR PIX ===== */
+function fecharPix(){
+document.getElementById("pixModal").style.display="none";
+}
+
+/* ===== ENVIAR WHATS ===== */
+function enviarWhats(msg){
+
+let numero = "5599988592997"; // SEU NÚMERO
 
 let url = 
 `https://wa.me/${numero}?text=${encodeURIComponent(msg)}`;
@@ -542,5 +565,63 @@ window.open(url,"_blank");
 }
 
 </script>
+
+</script>
+<!-- MODAL PIX -->
+<div id="pixModal" style="
+display:none;
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,.6);
+z-index:9999;
+align-items:center;
+justify-content:center;
+">
+
+<div style="
+background:#fff;
+padding:20px;
+border-radius:10px;
+width:90%;
+max-width:320px;
+text-align:center;
+">
+
+<h3>Pagamento via Pix</h3>
+
+<img src="99988592997" style="width:200px;margin:10px">
+
+<p><b>Chave Pix:</b></p>
+<p>5599988592997</p>
+
+<button onclick="confirmarPix()" 
+style="
+background:#0a7cff;
+color:#fff;
+border:none;
+padding:10px 15px;
+border-radius:5px;
+width:100%;
+font-size:16px;
+">
+Já paguei
+</button>
+
+<br><br>
+
+<button onclick="fecharPix()"
+style="
+background:#ccc;
+border:none;
+padding:8px;
+width:100%;
+border-radius:5px;
+">
+Cancelar
+</button>
+
+</div>
+</div>
 </body>
 </html>
