@@ -490,9 +490,7 @@ return;
 
 }
 
-/* PIX */
-if(pagamento === "pix"){
-
+  
 /* PIX */
 if(pagamento === "pix"){
 
@@ -504,6 +502,13 @@ let copiar = prompt(
 chave +
 "\n\nCole no app do banco para pagar.",
 chave
+);
+
+if(copiar === null){
+return; // cancelou
+}
+
+}
 );
 
 if(copiar === null){
